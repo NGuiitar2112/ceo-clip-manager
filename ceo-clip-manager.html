@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEO Clip Manager — DutchMilk</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:#0D1B2A; --navy2:#162436; --navy3:#1E3148; --navy4:#243a52;
+  --gold:#C9A84C; --gold2:#E8C96A;
+  --cream:#F5F0E8; --slate:#8A9BB0; --slate2:#5A6E84;
+  --green:#5CC48A; --red:#E05C5C; --orange:#E0A85C;
+  --fb:#1877F2; --tt:#000000; --sp:#EE4D2D; --xx:#1DA1F2;
+}
+body { font-family:'Inter',sans-serif; background:var(--navy); color:var(--cream); height:100vh; overflow:hidden; display:flex; flex-direction:column; }
+
+.topbar { display:flex; align-items:center; justify-content:space-between; padding:10px 24px; background:var(--navy2); border-bottom:1px solid var(--navy3); flex-shrink:0; }
+.logo { font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--gold); letter-spacing:.05em; }
+.logo span { color:var(--cream); font-weight:300; }
+.topbar-center { display:flex; gap:4px; }
+.tab-nav { padding:6px 16px; border-radius:8px; border:none; background:transparent; color:var(--slate); font-size:0.73rem; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; transition:all .18s; }
+.tab-nav.active,.tab-nav:hover { background:var(--navy3); color:var(--gold); }
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.notif-btn { position:relative; background:transparent; border:none; cursor:pointer; font-size:1rem; }
+.notif-badge { position:absolute; top:-2px; right:-2px; background:var(--red); width:8px; height:8px; border-radius:50%; }
+.ceo-badge { font-size:.68rem; font-weight:600; letter-spacing:.1em; color:var(--gold); background:rgba(201,168,76,.12); border:1px solid rgba(201,168,76,.3); padding:4px 10px; border-radius:20px; }
+.avatar-top { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold2)); display:flex; align-items:center; justify-content:center; font-size:.7rem; font-weight:700; color:var(--navy); }
+
+/* Finnhub ticker */
+.ticker-bar { background:var(--navy3); padding:6px 24px; display:flex; align-items:center; gap:20px; overflow:hidden; flex-shrink:0; border-bottom:1px solid var(--navy4); }
+.ticker-label { font-size:.62rem; font-weight:700; color:var(--gold); letter-spacing:.08em; white-space:nowrap; flex-shrink:0; }
+.ticker-scroll { display:flex; gap:24px; animation:tickerMove 30s linear infinite; }
+.ticker-scroll:hover { animation-play-state:paused; }
+@keyframes tickerMove { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+.ticker-item { display:flex; align-items:center; gap:6px; white-space:nowrap; cursor:pointer; }
+.ticker-sym { font-size:.7rem; font-weight:700; color:var(--cream); }
+.ticker-price { font-size:.7rem; color:var(--slate); }
+.ticker-chg { font-size:.67rem; font-weight:600; }
+.ticker-chg.up { color:var(--green); }
+.ticker-chg.dn { color:var(--red); }
+
+.platform-bar { display:flex; gap:8px; padding:10px 24px; background:var(--navy2); border-bottom:1px solid var(--navy3); flex-shrink:0; overflow-x:auto; }
+.platform-bar::-webkit-scrollbar { height:0; }
+.plat-pill { display:flex; align-items:center; gap:7px; padding:7px 16px; border-radius:24px; border:1px solid var(--navy3); background:transparent; cursor:pointer; transition:all .18s; white-space:nowrap; flex-shrink:0; }
+.plat-pill:hover { border-color:var(--slate); }
+.plat-pill.active { border-color:transparent; }
+.plat-pill.all.active { background:rgba(201,168,76,.15); border-color:var(--gold); }
+.plat-pill.fb.active { background:rgba(24,119,242,.15); border-color:var(--fb); }
+.plat-pill.tt.active { background:rgba(255,255,255,.1); border-color:#fff; }
+.plat-pill.sp.active { background:rgba(238,77,45,.15); border-color:var(--sp); }
+.plat-pill.xx.active { background:rgba(29,161,242,.15); border-color:var(--xx); }
+.plat-icon { width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.85rem; flex-shrink:0; }
+.plat-icon.fb-ic { background:var(--fb); }
+.plat-icon.tt-ic { background:#000; border:1px solid #333; }
+.plat-icon.sp-ic { background:var(--sp); }
+.plat-icon.xx-ic { background:#000; border:1px solid #333; }
+.plat-icon.all-ic { background:var(--navy3); }
+.plat-label { font-size:.72rem; font-weight:600; color:var(--slate); }
+.plat-pill.active .plat-label { color:var(--cream); }
+.plat-count { font-size:.65rem; font-weight:700; padding:1px 7px; border-radius:10px; background:var(--navy3); color:var(--slate); }
+.plat-pill.fb.active .plat-count { background:var(--fb); color:#fff; }
+.plat-pill.tt.active .plat-count { background:#555; color:#fff; }
+.plat-pill.sp.active .plat-count { background:var(--sp); color:#fff; }
+.plat-pill.xx.active .plat-count { background:var(--xx); color:#fff; }
+.plat-pill.all.active .plat-count { background:var(--gold); color:var(--navy); }
+
+.stats-row { display:flex; gap:1px; background:var(--navy3); border-bottom:1px solid var(--navy3); flex-shrink:0; }
+.stat-box { flex:1; padding:10px 16px; background:var(--navy2); display:flex; flex-direction:column; gap:2px; min-width:0; }
+.stat-label { font-size:.63rem; color:var(--slate); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.stat-value { font-size:.95rem; font-weight:700; color:var(--cream); }
+.stat-change { font-size:.62rem; }
+.stat-change.up { color:var(--green); }
+.stat-change.down { color:var(--red); }
+
+.main { display:grid; grid-template-columns:1fr 370px; flex:1; overflow:hidden; }
+
+.clip-panel { display:flex; flex-direction:column; border-right:1px solid var(--navy3); overflow:hidden; }
+.panel-header { padding:14px 20px 12px; border-bottom:1px solid var(--navy3); flex-shrink:0; }
+.panel-top-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.panel-title { font-family:'Playfair Display',serif; font-size:1rem; color:var(--cream); }
+.filter-row { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.filter-btn { padding:4px 12px; border-radius:16px; border:1px solid var(--navy3); background:transparent; color:var(--slate); font-size:.7rem; font-family:'Inter',sans-serif; cursor:pointer; transition:all .15s; font-weight:500; }
+.filter-btn.active,.filter-btn:hover { background:var(--gold); border-color:var(--gold); color:var(--navy); }
+.search-wrap { position:relative; }
+.search-wrap input { background:var(--navy3); border:1px solid transparent; border-radius:7px; padding:5px 10px 5px 28px; color:var(--cream); font-size:.72rem; font-family:'Inter',sans-serif; width:160px; outline:none; transition:border .15s; }
+.search-wrap input:focus { border-color:var(--gold); }
+.search-wrap input::placeholder { color:var(--slate2); }
+.search-icon { position:absolute; left:8px; top:50%; transform:translateY(-50%); color:var(--slate2); font-size:.75rem; }
+
+.clip-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(185px,1fr)); gap:12px; padding:14px 20px; overflow-y:auto; flex:1; }
+.clip-grid::-webkit-scrollbar { width:3px; }
+.clip-grid::-webkit-scrollbar-thumb { background:var(--navy3); border-radius:4px; }
+.clip-card { background:var(--navy2); border:1px solid var(--navy3); border-radius:10px; overflow:hidden; cursor:pointer; transition:border-color .15s,transform .15s; position:relative; }
+.clip-card:hover { border-color:var(--gold); transform:translateY(-2px); }
+.clip-card.selected { border-color:var(--gold); box-shadow:0 0 0 1px var(--gold); }
+.clip-thumb { width:100%; aspect-ratio:16/9; position:relative; overflow:hidden; }
+.thumb-inner { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:4px; }
+.play-btn { width:32px; height:32px; border-radius:50%; background:rgba(201,168,76,.88); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .15s; position:absolute; }
+.clip-card:hover .play-btn { opacity:1; }
+.play-btn svg { width:13px; fill:var(--navy); margin-left:2px; }
+.status-dot { position:absolute; top:7px; right:7px; width:7px; height:7px; border-radius:50%; }
+.dot-live { background:var(--green); box-shadow:0 0 5px var(--green); }
+.dot-draft { background:var(--slate); }
+.dot-review { background:var(--orange); box-shadow:0 0 5px var(--orange); }
+.plat-badge { position:absolute; top:7px; left:7px; width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:.7rem; }
+.clip-info { padding:9px 11px 10px; }
+.clip-name { font-size:.75rem; font-weight:600; color:var(--cream); margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.clip-meta { display:flex; align-items:center; justify-content:space-between; gap:4px; }
+.clip-plat-tag { display:inline-flex; align-items:center; gap:3px; background:var(--navy3); padding:2px 7px; border-radius:4px; font-size:.62rem; font-weight:600; color:var(--slate); }
+.clip-views { font-size:.64rem; color:var(--gold); font-weight:500; }
+.clip-status-tag { font-size:.62rem; color:var(--slate); }
+
+.action-bar { padding:10px 20px; border-top:1px solid var(--navy3); display:flex; gap:8px; align-items:center; background:var(--navy2); flex-shrink:0; }
+.btn { padding:7px 14px; border-radius:7px; font-size:.72rem; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; border:none; transition:all .15s; }
+.btn-gold { background:var(--gold); color:var(--navy); }
+.btn-gold:hover { background:var(--gold2); }
+.btn-outline { background:transparent; color:var(--slate); border:1px solid var(--navy3); }
+.btn-outline:hover { border-color:var(--slate); color:var(--cream); }
+.stat-chip { margin-left:auto; font-size:.67rem; color:var(--slate); }
+.stat-chip b { color:var(--gold); }
+
+/* ARIA panel */
+.aria-panel { display:flex; flex-direction:column; background:var(--navy2); }
+.aria-header { padding:14px 18px; border-bottom:1px solid var(--navy3); display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.aria-avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#1E3148 60%,#C9A84C); display:flex; align-items:center; justify-content:center; font-size:1.1rem; border:2px solid var(--gold); flex-shrink:0; }
+.aria-name { font-family:'Playfair Display',serif; font-size:.92rem; color:var(--cream); }
+.aria-role { font-size:.65rem; color:var(--slate); margin-top:1px; }
+.aria-badges { display:flex; gap:4px; margin-top:3px; }
+.aria-badge { font-size:.55rem; font-weight:700; padding:1px 5px; border-radius:4px; }
+.badge-groq { background:rgba(99,102,241,.25); color:#a5b4fc; border:1px solid rgba(99,102,241,.3); }
+.badge-fh { background:rgba(92,196,138,.15); color:var(--green); border:1px solid rgba(92,196,138,.3); }
+.online-dot { width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 5px var(--green); flex-shrink:0; margin-left:auto; }
+
+.quick-actions { display:flex; gap:5px; padding:8px 14px; border-bottom:1px solid var(--navy3); flex-wrap:wrap; flex-shrink:0; }
+.qa-chip { padding:5px 11px; border-radius:16px; background:var(--navy3); border:1px solid transparent; color:var(--slate); font-size:.67rem; font-weight:500; font-family:'Inter',sans-serif; cursor:pointer; transition:all .15s; white-space:nowrap; }
+.qa-chip:hover { border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,.08); }
+
+.chat-messages { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:12px; }
+.chat-messages::-webkit-scrollbar { width:3px; }
+.chat-messages::-webkit-scrollbar-thumb { background:var(--navy3); border-radius:4px; }
+.msg { display:flex; gap:8px; align-items:flex-end; }
+.msg.user { flex-direction:row-reverse; }
+.msg-avatar { width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.62rem; font-weight:700; }
+.msg-avatar.aria-av { background:linear-gradient(135deg,var(--navy3),var(--gold)); color:var(--cream); border:1px solid var(--gold); }
+.msg-avatar.user-av { background:var(--gold); color:var(--navy); }
+.bubble { max-width:88%; padding:9px 12px; border-radius:13px; font-size:.75rem; line-height:1.55; }
+.bubble.aria { background:var(--navy3); color:var(--cream); border-bottom-left-radius:3px; }
+.bubble.user { background:var(--gold); color:var(--navy); border-bottom-right-radius:3px; font-weight:500; }
+.bubble-time { font-size:.58rem; color:var(--slate2); margin-top:3px; }
+.msg.user .bubble-time { text-align:right; }
+.aria-suggestion { display:flex; gap:5px; flex-wrap:wrap; margin-top:7px; }
+.suggestion-chip { padding:3px 9px; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3); border-radius:10px; font-size:.64rem; color:var(--gold); cursor:pointer; transition:background .12s; }
+.suggestion-chip:hover { background:rgba(201,168,76,.22); }
+.typing { display:flex; gap:4px; align-items:center; padding:4px 0; }
+.typing span { width:5px; height:5px; border-radius:50%; background:var(--slate); animation:bounce 1.2s infinite; }
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.5}40%{transform:translateY(-5px);opacity:1}}
+.groq-badge-msg { display:inline-flex; align-items:center; gap:3px; font-size:.58rem; color:#a5b4fc; margin-top:5px; }
+.finnhub-badge-msg { display:inline-flex; align-items:center; gap:3px; font-size:.58rem; color:var(--green); margin-top:5px; }
+
+.chat-input-wrap { padding:10px 14px; border-top:1px solid var(--navy3); display:flex; gap:7px; align-items:flex-end; flex-shrink:0; }
+.chat-input { flex:1; background:var(--navy3); border:1px solid transparent; border-radius:10px; padding:9px 12px; color:var(--cream); font-size:.75rem; font-family:'Inter',sans-serif; outline:none; resize:none; height:38px; max-height:110px; transition:border .15s; line-height:1.4; }
+.chat-input:focus { border-color:var(--gold); }
+.chat-input::placeholder { color:var(--slate2); }
+.send-btn { width:36px; height:36px; border-radius:9px; background:var(--gold); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .15s; }
+.send-btn:hover { background:var(--gold2); }
+.send-btn svg { width:14px; fill:var(--navy); }
+.send-btn.loading { background:var(--navy3); cursor:not-allowed; }
+
+.t1{background:linear-gradient(135deg,#1a2f4a,#2d5a8e)}
+.t2{background:linear-gradient(135deg,#2a1a3a,#6b3fa0)}
+.t3{background:linear-gradient(135deg,#1a3a2a,#2d8e5a)}
+.t4{background:linear-gradient(135deg,#3a2a1a,#8e6b2d)}
+.t5{background:linear-gradient(135deg,#3a1a1a,#9e4040)}
+.t6{background:linear-gradient(135deg,#1a3a3a,#2d8e8e)}
+.t7{background:linear-gradient(135deg,#2a3a1a,#6e8e2d)}
+.t8{background:linear-gradient(135deg,#3a2a3a,#8e2d8e)}
+
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:100; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--navy2); border:1px solid var(--navy3); border-radius:16px; padding:24px; width:480px; max-width:92vw; }
+.modal-title { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--cream); margin-bottom:16px; }
+.modal-plats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.modal-plat { padding:14px; border-radius:10px; border:1px solid var(--navy3); cursor:pointer; transition:all .15s; }
+.modal-plat:hover { border-color:var(--slate); }
+.modal-plat.sel { border-color:var(--gold); background:rgba(201,168,76,.08); }
+.modal-plat-row { display:flex; align-items:center; gap:10px; }
+.modal-plat-icon { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+.modal-plat-name { font-size:.82rem; font-weight:600; color:var(--cream); }
+.modal-plat-sub { font-size:.65rem; color:var(--slate); margin-top:1px; }
+.modal-plat-stats { font-size:.65rem; color:var(--gold); margin-top:6px; }
+.modal-actions { display:flex; gap:8px; justify-content:flex-end; }
+.modal-close { padding:8px 18px; border-radius:7px; background:transparent; border:1px solid var(--navy3); color:var(--slate); font-size:.73rem; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; }
+.modal-close:hover { border-color:var(--slate); color:var(--cream); }
+.modal-confirm { padding:8px 18px; border-radius:7px; background:var(--gold); border:none; color:var(--navy); font-size:.73rem; font-weight:700; font-family:'Inter',sans-serif; cursor:pointer; }
+.modal-confirm:hover { background:var(--gold2); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Clip<span>Studio</span></div>
+  <div class="topbar-center">
+    <button class="tab-nav active" onclick="switchTab('clips',this)">📹 คลิปสินค้า</button>
+    <button class="tab-nav" onclick="switchTab('analytics',this)">📊 Analytics</button>
+    <button class="tab-nav" onclick="switchTab('schedule',this)">📅 ตารางปัก</button>
+  </div>
+  <div class="topbar-right">
+    <button class="notif-btn" onclick="quickCmd('แจ้งเตือนล่าสุด')">🔔<span class="notif-badge"></span></button>
+    <div class="ceo-badge">CEO Dashboard</div>
+    <div class="avatar-top">CEO</div>
+  </div>
+</div>
+
+<!-- FINNHUB TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">📈 MARKET</div>
+  <div style="overflow:hidden;flex:1">
+    <div class="ticker-scroll" id="tickerScroll">
+      <span class="ticker-item"><span class="ticker-sym">LOADING…</span></span>
+    </div>
+  </div>
+</div>
+
+<div class="platform-bar">
+  <div class="plat-pill all active" onclick="filterPlatform('all',this)">
+    <div class="plat-icon all-ic">🌐</div>
+    <span class="plat-label">ทั้งหมด</span>
+    <span class="plat-count" id="cnt-all">12</span>
+  </div>
+  <div class="plat-pill fb" onclick="filterPlatform('Facebook',this)">
+    <div class="plat-icon fb-ic" style="color:#fff;font-weight:900;font-size:.8rem">f</div>
+    <span class="plat-label">Facebook</span>
+    <span class="plat-count" id="cnt-fb">3</span>
+  </div>
+  <div class="plat-pill tt" onclick="filterPlatform('TikTok',this)">
+    <div class="plat-icon tt-ic" style="color:#fff;font-weight:900;font-size:.7rem">♪</div>
+    <span class="plat-label">TikTok</span>
+    <span class="plat-count" id="cnt-tt">4</span>
+  </div>
+  <div class="plat-pill sp" onclick="filterPlatform('Shopee',this)">
+    <div class="plat-icon sp-ic" style="color:#fff;font-size:.8rem">🛍</div>
+    <span class="plat-label">Shopee</span>
+    <span class="plat-count" id="cnt-sp">3</span>
+  </div>
+  <div class="plat-pill xx" onclick="filterPlatform('X',this)">
+    <div class="plat-icon xx-ic" style="color:#fff;font-weight:900;font-size:.8rem">𝕏</div>
+    <span class="plat-label">X (Twitter)</span>
+    <span class="plat-count" id="cnt-xx">2</span>
+  </div>
+</div>
+
+<div class="stats-row" id="statsRow"></div>
+
+<div class="main">
+  <div class="clip-panel">
+    <div class="panel-header">
+      <div class="panel-top-row">
+        <div class="panel-title" id="panelTitle">คลิปสินค้าทั้งหมด</div>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="ค้นหา…" oninput="searchClips(this.value)">
+        </div>
+      </div>
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="filterStatus('all',this)">ทั้งหมด</button>
+        <button class="filter-btn" onclick="filterStatus('live',this)">🟢 Live</button>
+        <button class="filter-btn" onclick="filterStatus('review',this)">🟡 รอตรวจ</button>
+        <button class="filter-btn" onclick="filterStatus('draft',this)">⚪ แบบร่าง</button>
+      </div>
+    </div>
+    <div class="clip-grid" id="clipGrid"></div>
+    <div class="action-bar">
+      <button class="btn btn-gold" onclick="openPlatModal()">＋ ปักตะกร้า</button>
+      <button class="btn btn-outline" onclick="quickCmd('สรุปผลงานคลิปทั้งหมด')">📊 สรุปผล</button>
+      <button class="btn btn-outline" onclick="quickCmd('กำหนดตารางปักตะกร้า')">📅 ตารางปัก</button>
+      <div class="stat-chip">คลิป <b id="totalCount">0</b> รายการ</div>
+    </div>
+  </div>
+
+  <div class="aria-panel">
+    <div class="aria-header">
+      <div class="aria-avatar">🤖</div>
+      <div>
+        <div class="aria-name">DutchMilk</div>
+        <div class="aria-role">AI Secretary · 4 แพลตฟอร์ม</div>
+        <div class="aria-badges">
+          <span class="aria-badge badge-groq">⚡ Groq AI</span>
+          <span class="aria-badge badge-fh">📈 Finnhub</span>
+        </div>
+      </div>
+      <div class="online-dot"></div>
+    </div>
+    <div class="quick-actions">
+      <button class="qa-chip" onclick="quickCmd('วันนี้มีคลิปไหนต้องปักตะกร้า?')">🛒 ต้องปักวันนี้</button>
+      <button class="qa-chip" onclick="quickCmd('ราคาหุ้นตอนนี้เป็นยังไง?')">📈 ราคาหุ้น</button>
+      <button class="qa-chip" onclick="quickCmd('สรุปยอดทุกแพลตฟอร์ม')">📊 ยอดรวม</button>
+      <button class="qa-chip" onclick="quickCmd('TikTok วันนี้เป็นยังไง?')">🎵 TikTok</button>
+      <button class="qa-chip" onclick="quickCmd('Shopee ยอดขายเป็นยังไง?')">🛍 Shopee</button>
+      <button class="qa-chip" onclick="quickCmd('วิเคราะห์ตลาดสินค้าความงาม')">💄 วิเคราะห์ตลาด</button>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-wrap">
+      <textarea class="chat-input" id="chatInput" placeholder="ถาม DutchMilk ได้เลย… (Groq AI จริง)" rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
+        oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMsg()">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="platModal">
+  <div class="modal">
+    <div class="modal-title">🛒 เลือกแพลตฟอร์มที่ต้องการปักตะกร้า</div>
+    <div class="modal-plats">
+      <div class="modal-plat sel" onclick="togglePlat(this,'Facebook')">
+        <div class="modal-plat-row">
+          <div class="modal-plat-icon" style="background:var(--fb);color:#fff;font-weight:900">f</div>
+          <div><div class="modal-plat-name">Facebook</div><div class="modal-plat-sub">Facebook Shop / Reels</div></div>
+        </div>
+        <div class="modal-plat-stats">👥 128K · 🛒 Shop เชื่อมแล้ว</div>
+      </div>
+      <div class="modal-plat sel" onclick="togglePlat(this,'TikTok')">
+        <div class="modal-plat-row">
+          <div class="modal-plat-icon" style="background:#000;border:1px solid #444;color:#fff;font-weight:900">♪</div>
+          <div><div class="modal-plat-name">TikTok</div><div class="modal-plat-sub">TikTok Shop / FYP</div></div>
+        </div>
+        <div class="modal-plat-stats">👥 342K · 🛒 TikTok Shop ✅</div>
+      </div>
+      <div class="modal-plat sel" onclick="togglePlat(this,'Shopee')">
+        <div class="modal-plat-row">
+          <div class="modal-plat-icon" style="background:var(--sp)">🛍</div>
+          <div><div class="modal-plat-name">Shopee</div><div class="modal-plat-sub">Shopee Live / Video</div></div>
+        </div>
+        <div class="modal-plat-stats">⭐ 4.9 · 🛒 Shopee Mall ✅</div>
+      </div>
+      <div class="modal-plat sel" onclick="togglePlat(this,'X')">
+        <div class="modal-plat-row">
+          <div class="modal-plat-icon" style="background:#000;border:1px solid #444;color:#fff;font-weight:900;font-size:1rem">𝕏</div>
+          <div><div class="modal-plat-name">X (Twitter)</div><div class="modal-plat-sub">X Posts / Video</div></div>
+        </div>
+        <div class="modal-plat-stats">👥 89K · 💙 Verified ✅</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-close" onclick="closePlatModal()">ยกเลิก</button>
+      <button class="modal-confirm" onclick="confirmPost()">ปักตะกร้าทุกแพลตฟอร์มที่เลือก ✅</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──
+const GROQ_API_KEY = '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';
+const FINNHUB_API_KEY = 'd8mbjc1r01qkiso7q2u0d8mbjc1r01qkiso7q2ug';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
+
+const SYSTEM_PROMPT = `คุณคือ DutchMilk เลขา AI ส่วนตัวของ CEO ของระบบจัดการคลิปสินค้า (Clip Studio)
+คุณช่วย CEO จัดการคลิปวิดีโอสินค้าบน 4 แพลตฟอร์ม: Facebook, TikTok, Shopee, X (Twitter)
+หน้าที่หลัก: ปักตะกร้าสินค้า, วิเคราะห์ยอดขาย, แนะนำเวลาโพสต์, สร้างสคริปต์คลิป, สรุปผลตลาด
+ตอบเป็นภาษาไทยเสมอ สั้น กระชับ มีประสิทธิภาพ ใช้ emoji ประกอบ
+ถ้ามีข้อมูลตลาดจาก Finnhub ให้นำมาวิเคราะห์เชื่อมกับธุรกิจสินค้าความงาม/ไลฟ์สไตล์ของ CEO ด้วย`;
+
+// ── FINNHUB ──
+const TICKERS = ['META','SHOP','SNAP','GOOGL','AMZN'];
+
+async function fetchFinnhub(symbol) {
+  try {
+    const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`);
+    const d = await r.json();
+    return { symbol, c: d.c, dp: d.dp };
+  } catch(e) { return null; }
+}
+
+async function loadTicker() {
+  const results = await Promise.all(TICKERS.map(fetchFinnhub));
+  const valid = results.filter(Boolean);
+  if (!valid.length) {
+    document.getElementById('tickerScroll').innerHTML = '<span class="ticker-item"><span class="ticker-sym" style="color:var(--slate)">ไม่สามารถโหลดข้อมูลตลาดได้</span></span>';
+    return;
+  }
+  // duplicate for seamless loop
+  const items = [...valid, ...valid].map(d => {
+    const up = d.dp >= 0;
+    return `<span class="ticker-item" onclick="quickCmd('วิเคราะห์หุ้น ${d.symbol} กับธุรกิจของเรา')">
+      <span class="ticker-sym">${d.symbol}</span>
+      <span class="ticker-price">$${d.c?.toFixed(2)??'–'}</span>
+      <span class="ticker-chg ${up?'up':'dn'}">${up?'▲':'▼'}${Math.abs(d.dp??0).toFixed(2)}%</span>
+    </span>`;
+  }).join('');
+  document.getElementById('tickerScroll').innerHTML = items;
+  // store for Groq context
+  window.marketData = valid;
+}
+
+// ── GROQ ──
+let isLoading = false;
+const chatHistory = [];
+
+async function callGroq(userMsg) {
+  // Add market context if available
+  let contextMsg = userMsg;
+  if (window.marketData && userMsg.toLowerCase().includes('หุ้น') || userMsg.toLowerCase().includes('ตลาด') || userMsg.toLowerCase().includes('market')) {
+    const mkt = window.marketData.map(d=>`${d.symbol}: $${d.c?.toFixed(2)} (${d.dp>=0?'+':''}${d.dp?.toFixed(2)}%)`).join(', ');
+    contextMsg = `${userMsg}\n\n[ข้อมูลตลาดจาก Finnhub ณ ตอนนี้: ${mkt}]`;
+  }
+
+  chatHistory.push({ role:'user', content: contextMsg });
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      max_tokens: 512,
+      temperature: 0.7,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...chatHistory.slice(-8)
+      ]
+    })
+  });
+
+  if (!res.ok) throw new Error(`Groq error ${res.status}`);
+  const data = await res.json();
+  const reply = data.choices[0].message.content;
+  chatHistory.push({ role:'assistant', content: reply });
+  return reply;
+}
+
+// ── DATA ──
+const clips = [
+  { id:1,  name:'ครีมหน้าใส SPF50+',       platform:'TikTok',   status:'live',   views:'214K', emoji:'🧴', color:'t1' },
+  { id:2,  name:'เซรั่มวิตามินซี',           platform:'Facebook', status:'review', views:'–',    emoji:'💊', color:'t2' },
+  { id:3,  name:'ชุดบำรุงผิว 3 ขั้น',        platform:'Shopee',   status:'draft',  views:'–',    emoji:'✨', color:'t3' },
+  { id:4,  name:'ลิปสติกเนื้อแมทท์',        platform:'TikTok',   status:'live',   views:'87K',  emoji:'💄', color:'t4' },
+  { id:5,  name:'มาสก์หน้าคอลลาเจน',        platform:'X',        status:'draft',  views:'–',    emoji:'🎭', color:'t5' },
+  { id:6,  name:'โลชั่นทาผิวอโรมา',         platform:'Facebook', status:'live',   views:'128K', emoji:'🌸', color:'t1' },
+  { id:7,  name:'สครับน้ำตาลทราย',          platform:'TikTok',   status:'review', views:'–',    emoji:'🍯', color:'t6' },
+  { id:8,  name:'ไวท์เทนนิ่ง ทรีทเมนต์',   platform:'Shopee',   status:'live',   views:'56K',  emoji:'⚗️', color:'t2' },
+  { id:9,  name:'บำรุงผมเคราตินสเปรย์',     platform:'X',        status:'review', views:'–',    emoji:'💈', color:'t7' },
+  { id:10, name:'อายครีมลดรอยถุงใต้ตา',    platform:'Facebook', status:'draft',  views:'–',    emoji:'👁', color:'t8' },
+  { id:11, name:'คอลลาเจนเปปไทด์ดื่มได้',  platform:'Shopee',   status:'review', views:'–',    emoji:'🥤', color:'t3' },
+  { id:12, name:'เจลล้างหน้าอ่อนโยน',      platform:'TikTok',   status:'live',   views:'312K', emoji:'🫧', color:'t6' },
+];
+
+const platformStats = {
+  all:      { followers:'561K', views:'797K', orders:'1,842', revenue:'฿284K', engagement:'6.4%' },
+  Facebook: { followers:'128K', views:'128K', orders:'412',   revenue:'฿68K',  engagement:'4.2%' },
+  TikTok:   { followers:'342K', views:'613K', orders:'983',   revenue:'฿142K', engagement:'8.9%' },
+  Shopee:   { followers:'–',    views:'56K',  orders:'387',   revenue:'฿61K',  engagement:'5.1%' },
+  X:        { followers:'89K',  views:'–',    orders:'60',    revenue:'฿13K',  engagement:'2.8%' },
+};
+
+let currentPlatform = 'all', currentStatus = 'all', searchTerm = '';
+
+function filterPlatform(plat, el) {
+  currentPlatform = plat;
+  document.querySelectorAll('.plat-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panelTitle').textContent = plat==='all'?'คลิปสินค้าทั้งหมด':'คลิปบน '+plat;
+  renderStats(); renderClips();
+  if (plat !== 'all') quickCmd(`${plat} วันนี้เป็นยังไง?`);
+}
+
+function renderStats() {
+  const s = platformStats[currentPlatform]||platformStats.all;
+  const rows = [
+    {l:currentPlatform==='Shopee'?'ร้านค้า':'ผู้ติดตาม',v:s.followers,d:'up',c:'+12%'},
+    {l:'ยอดวิวรวม',v:s.views,d:'up',c:'+24%'},
+    {l:'คำสั่งซื้อ',v:s.orders,d:'up',c:'+8%'},
+    {l:'รายได้',v:s.revenue,d:'up',c:'+18%'},
+    {l:'Engagement',v:s.engagement,d:'down',c:'-0.3%'},
+  ];
+  document.getElementById('statsRow').innerHTML = rows.map(r=>`
+    <div class="stat-box">
+      <div class="stat-label">${r.l}</div>
+      <div class="stat-value">${r.v}</div>
+      <div class="stat-change ${r.d}">${r.d==='up'?'▲':'▼'} ${r.c}</div>
+    </div>`).join('');
+}
+
+function renderClips() {
+  const grid = document.getElementById('clipGrid');
+  const filtered = clips.filter(c=>{
+    const mp = currentPlatform==='all'||c.platform===currentPlatform;
+    const ms = currentStatus==='all'||c.status===currentStatus;
+    const mq = c.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return mp&&ms&&mq;
+  });
+  document.getElementById('totalCount').textContent = filtered.length;
+  document.getElementById('cnt-all').textContent = clips.length;
+  [['Facebook','fb'],['TikTok','tt'],['Shopee','sp'],['X','xx']].forEach(([p,id])=>{
+    const el=document.getElementById('cnt-'+id); if(el) el.textContent=clips.filter(c=>c.platform===p).length;
+  });
+  const pc={'Facebook':'#1877F2','TikTok':'#111','Shopee':'#EE4D2D','X':'#111'};
+  const pe={'Facebook':'f','TikTok':'♪','Shopee':'🛍','X':'𝕏'};
+  grid.innerHTML = filtered.map(c=>`
+    <div class="clip-card" onclick="selectClip(${c.id},'${c.name.replace(/'/g,"\\'")}')">
+      <div class="clip-thumb ${c.color}">
+        <div class="thumb-inner"><div style="font-size:2rem">${c.emoji}</div></div>
+        <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="status-dot ${c.status==='live'?'dot-live':c.status==='review'?'dot-review':'dot-draft'}"></div>
+        <div class="plat-badge" style="background:${pc[c.platform]};color:#fff;font-size:.7rem;font-weight:900">${pe[c.platform]}</div>
+      </div>
+      <div class="clip-info">
+        <div class="clip-name">${c.name}</div>
+        <div class="clip-meta">
+          <span class="clip-plat-tag">${c.platform}</span>
+          ${c.views!=='–'?`<span class="clip-views">👁 ${c.views}</span>`:`<span class="clip-status-tag">${{live:'Live',review:'รอตรวจ',draft:'แบบร่าง'}[c.status]}</span>`}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function filterStatus(s,btn){
+  currentStatus=s;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); renderClips();
+}
+function searchClips(v){searchTerm=v;renderClips();}
+
+function selectClip(id,name){
+  document.querySelectorAll('.clip-card').forEach(c=>c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  quickCmd(`ช่วยวิเคราะห์คลิป "${name}" และแนะนำว่าควรปักตะกร้าบนแพลตฟอร์มไหนดี`);
+}
+
+let selectedPlats = new Set(['Facebook','TikTok','Shopee','X']);
+function openPlatModal(){document.getElementById('platModal').classList.add('open');}
+function closePlatModal(){document.getElementById('platModal').classList.remove('open');}
+function togglePlat(el,name){el.classList.toggle('sel');selectedPlats.has(name)?selectedPlats.delete(name):selectedPlats.add(name);}
+function confirmPost(){
+  closePlatModal();
+  const plats=[...selectedPlats].join(', ');
+  quickCmd(`ปักตะกร้าพร้อมกันบน ${plats} วิเคราะห์ให้หน่อยว่าจะได้ผลยังไง`);
+}
+
+// ── CHAT ──
+function appendUserMsg(text){
+  const chat=document.getElementById('chatMessages');
+  const d=document.createElement('div'); d.className='msg user';
+  d.innerHTML=`<div><div class="bubble user">${escHtml(text)}</div><div class="bubble-time">${getTime()}</div></div><div class="msg-avatar user-av">CEO</div>`;
+  chat.appendChild(d); chat.scrollTop=chat.scrollHeight;
+}
+
+function showTyping(){
+  const chat=document.getElementById('chatMessages');
+  const t=document.createElement('div'); t.className='msg'; t.id='typingIndicator';
+  t.innerHTML=`<div class="msg-avatar aria-av">🤖</div><div class="bubble aria"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chat.appendChild(t); chat.scrollTop=chat.scrollHeight;
+}
+function hideTyping(){const t=document.getElementById('typingIndicator');if(t)t.remove();}
+
+function appendAriaMsg(text, isGroq=false, isFinnhub=false){
+  const chat=document.getElementById('chatMessages');
+  const d=document.createElement('div'); d.className='msg';
+  const badges=(isGroq?'<div class="groq-badge-msg">⚡ Groq AI · llama-3.3-70b</div>':'')+(isFinnhub?'<div class="finnhub-badge-msg">📈 Finnhub Live Data</div>':'');
+  d.innerHTML=`<div class="msg-avatar aria-av">🤖</div><div><div class="bubble aria">${text.replace(/\n/g,'<br>')}${badges}</div><div class="bubble-time">${getTime()}</div></div>`;
+  chat.appendChild(d); chat.scrollTop=chat.scrollHeight;
+}
+
+function quickCmd(cmd){appendUserMsg(cmd);processReply(cmd);}
+
+async function processReply(text){
+  if(isLoading) return;
+  isLoading=true;
+  const btn=document.getElementById('sendBtn');
+  btn.classList.add('loading');
+  showTyping();
+  const hasMkt = text.includes('หุ้น')||text.includes('ตลาด')||text.includes('market')||text.includes('Finnhub');
+  try {
+    const reply = await callGroq(text);
+    hideTyping();
+    appendAriaMsg(reply, true, hasMkt);
+  } catch(e) {
+    hideTyping();
+    appendAriaMsg(`ขออภัยค่ะ เกิดข้อผิดพลาด: ${e.message}\n\nกรุณาลองใหม่อีกครั้งนะคะ`, false, false);
+  } finally {
+    isLoading=false;
+    btn.classList.remove('loading');
+  }
+}
+
+function sendMsg(){
+  const inp=document.getElementById('chatInput');
+  const t=inp.value.trim(); if(!t||isLoading) return;
+  inp.value=''; inp.style.height='38px';
+  appendUserMsg(t); processReply(t);
+}
+
+function autoResize(el){el.style.height='38px';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function getTime(){return new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});}
+function escHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-nav').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const msgs={analytics:'วิเคราะห์ analytics ทุกแพลตฟอร์มให้หน่อย',schedule:'ช่วยวางแผนตารางปักตะกร้าสัปดาห์นี้',clips:null};
+  if(msgs[tab]) quickCmd(msgs[tab]);
+}
+
+// ── INIT ──
+renderStats(); renderClips();
+loadTicker();
+setInterval(loadTicker, 60000); // refresh ทุก 1 นาที
+
+setTimeout(()=>{
+  appendAriaMsg(`สวัสดีค่ะ คุณ CEO! 👋\n\nฉัน **DutchMilk** พร้อมให้บริการแล้วค่ะ วันนี้ฉันมาพร้อม:\n⚡ **Groq AI** (llama-3.3-70b) — ตอบได้จริงทุกคำถาม\n📈 **Finnhub** — ข้อมูลตลาดหุ้นแบบ real-time\n\nกำลังโหลดข้อมูลตลาดให้อยู่นะคะ… มีอะไรให้ช่วยไหมคะ?`, false, false);
+}, 300);
+</script>
+</body>
+</html>
