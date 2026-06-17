@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DutchMilk CEO Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D1B2A;--navy2:#162436;--navy3:#1E3148;--navy4:#243a52;
+  --gold:#C9A84C;--gold2:#E8C96A;
+  --cream:#F5F0E8;--slate:#8A9BB0;--slate2:#5A6E84;
+  --green:#5CC48A;--red:#E05C5C;--orange:#E0A85C;--purple:#8B5CF6;
+  --fb:#1877F2;--tt:#111;--sp:#EE4D2D;--xx:#111;
+}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--cream);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+
+/* ── LOGIN SCREEN ── */
+#loginScreen{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:0}
+.login-box{background:var(--navy2);border:1px solid var(--navy3);border-radius:20px;padding:40px 44px;width:380px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.login-logo{font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);margin-bottom:4px}
+.login-sub{font-size:.75rem;color:var(--slate);margin-bottom:28px}
+.login-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--navy3),var(--gold));display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 24px;border:3px solid var(--gold)}
+.login-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;text-align:left}
+.login-label{font-size:.68rem;font-weight:600;color:var(--slate);letter-spacing:.06em}
+.login-input{background:var(--navy3);border:1px solid var(--navy4);border-radius:9px;padding:11px 14px;color:var(--cream);font-size:.82rem;font-family:'Inter',sans-serif;outline:none;transition:border .15s;width:100%}
+.login-input:focus{border-color:var(--gold)}
+.login-input::placeholder{color:var(--slate2)}
+.login-btn{width:100%;padding:12px;border-radius:9px;background:var(--gold);border:none;color:var(--navy);font-size:.82rem;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;margin-top:8px;transition:background .15s}
+.login-btn:hover{background:var(--gold2)}
+.login-err{font-size:.72rem;color:var(--red);margin-top:6px;min-height:18px}
+.login-hint{font-size:.65rem;color:var(--slate2);margin-top:14px}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:9px 22px;background:var(--navy2);border-bottom:1px solid var(--navy3);flex-shrink:0}
+.logo{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold)}
+.logo span{color:var(--cream);font-weight:300}
+.topbar-tabs{display:flex;gap:2px}
+.tab-nav{padding:6px 14px;border-radius:7px;border:none;background:transparent;color:var(--slate);font-size:.71rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s}
+.tab-nav.active,.tab-nav:hover{background:var(--navy3);color:var(--gold)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.notif-wrap{position:relative;cursor:pointer}
+.notif-icon{font-size:1rem}
+.notif-badge{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:.5rem;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+.ceo-badge{font-size:.66rem;font-weight:600;color:var(--gold);background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);padding:3px 9px;border-radius:16px}
+.logout-btn{background:transparent;border:1px solid var(--navy3);color:var(--slate);font-size:.66rem;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+100%{transform:translateX(-50%)}}
+
+
+
+
+
+
+/* ── PLATFORM BAR ── */
+.platform-bar{display:flex;gap:6px;padding:8px 22px;background:var(--navy2);border-bottom:1px solid var(--navy3);flex-shrink:0;overflow-x:auto}
+.platform-bar::-webkit-scrollbar{height:0}
+.plat-pill{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--navy3);background:transparent;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;font-size:.7rem;font-weight:600;color:var(--slate)}
+.plat-pill:hover,.plat-pill.active{border-color:var(--gold);color:var(--cream)}
+.plat-pill.all.active{background:rgba(201,168,76,.15);border-color:var(--gold)}
+.plat-pill.fb.active{background:rgba(24,119,242,.15);border-color:var(--fb);color:#fff}
+.plat-pill.tt.active{background:rgba(255,255,255,.08);border-color:#aaa;color:#fff}
+.plat-pill.sp.active{background:rgba(238,77,45,.15);border-color:var(--sp);color:#fff}
+.plat-pill.xx.active{background:rgba(150,150,150,.12);border-color:#888;color:#fff}
+.plat-count{font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:8px;background:var(--navy3)}
+.plat-pill.all.active .plat-count{background:var(--gold);color:var(--navy)}
+.plat-pill.fb.active .plat-count{background:var(--fb)}
+.plat-pill.tt.active .plat-count{background:#444}
+.plat-pill.sp.active .plat-count{background:var(--sp)}
+.plat-pill.xx.active .plat-count{background:#555}
+
+/* ── STATS ROW ── */
+.stats-row{display:flex;gap:1px;background:var(--navy3);border-bottom:1px solid var(--navy3);flex-shrink:0}
+.stat-box{flex:1;padding:9px 14px;background:var(--navy2);display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat-label{font-size:.6rem;color:var(--slate);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-value{font-size:.9rem;font-weight:700;color:var(--cream)}
+.stat-change{font-size:.6rem}
+.stat-change.up{color:var(--green)}.stat-change.dn{color:var(--red)}
+
+/* ── PAGE VIEWS ── */
+.page{display:none;flex:1;overflow:hidden}
+.page.active{display:flex}
+
+/* ── MAIN LAYOUT ── */
+.main-layout{display:grid;grid-template-columns:1fr 360px;flex:1;overflow:hidden;width:100%}
+
+/* ── CLIP PANEL ── */
+.clip-panel{display:flex;flex-direction:column;border-right:1px solid var(--navy3);overflow:hidden}
+.panel-header{padding:12px 18px 10px;border-bottom:1px solid var(--navy3);flex-shrink:0}
+.panel-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.panel-title{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--cream)}
+.filter-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:4px 11px;border-radius:14px;border:1px solid var(--navy3);background:transparent;color:var(--slate);font-size:.67rem;font-family:'Inter',sans-serif;cursor:pointer;transition:all .13s;font-weight:500}
+.filter-btn.active,.filter-btn:hover{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.search-wrap{position:relative;margin-left:auto}
+.search-wrap input{background:var(--navy3);border:1px solid transparent;border-radius:6px;padding:4px 9px 4px 26px;color:var(--cream);font-size:.7rem;font-family:'Inter',sans-serif;width:148px;outline:none;transition:border .13s}
+.search-wrap input:focus{border-color:var(--gold)}
+.search-wrap input::placeholder{color:var(--slate2)}
+.search-icon{position:absolute;left:7px;top:50%;transform:translateY(-50%);color:var(--slate2);font-size:.72rem}
+
+.clip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:11px;padding:12px 18px;overflow-y:auto;flex:1}
+.clip-grid::-webkit-scrollbar{width:3px}
+.clip-grid::-webkit-scrollbar-thumb{background:var(--navy3);border-radius:4px}
+
+.empty-state{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:44px 24px;text-align:center}
+.empty-icon{font-size:2.6rem;opacity:.4}
+.empty-title{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--slate)}
+.empty-sub{font-size:.72rem;color:var(--slate2);max-width:260px;line-height:1.6}
+.empty-btn{padding:9px 18px;border-radius:7px;background:var(--gold);border:none;color:var(--navy);font-size:.72rem;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;margin-top:4px}
+.empty-btn:hover{background:var(--gold2)}
+
+.clip-card{background:var(--navy2);border:1px solid var(--navy3);border-radius:9px;overflow:hidden;cursor:pointer;transition:border-color .13s,transform .13s;position:relative}
+.clip-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.clip-card.selected{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.clip-thumb{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden}
+.thumb-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.play-btn{width:30px;height:30px;border-radius:50%;background:rgba(201,168,76,.9);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .13s;position:absolute}
+.clip-card:hover .play-btn{opacity:1}
+.play-btn svg{width:12px;fill:var(--navy);margin-left:2px}
+.status-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%}
+.dot-live{background:var(--green);box-shadow:0 0 5px var(--green)}
+.dot-draft{background:var(--slate)}.dot-review{background:var(--orange);box-shadow:0 0 5px var(--orange)}
+.plat-badge{position:absolute;top:6px;left:6px;width:19px;height:19px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:900}
+.clip-info{padding:8px 10px 9px}
+.clip-name{font-size:.72rem;font-weight:600;color:var(--cream);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clip-price{font-size:.68rem;color:var(--gold);font-weight:700;margin-bottom:3px}
+.clip-meta{display:flex;align-items:center;justify-content:space-between;gap:3px}
+.clip-plat-tag{background:var(--navy3);padding:2px 6px;border-radius:3px;font-size:.6rem;font-weight:600;color:var(--slate)}
+.clip-stock{font-size:.6rem;color:var(--slate)}
+
+.action-bar{padding:9px 18px;border-top:1px solid var(--navy3);display:flex;gap:7px;align-items:center;background:var(--navy2);flex-shrink:0}
+.btn{padding:6px 13px;border-radius:6px;font-size:.7rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;border:none;transition:all .13s}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold2)}
+.btn-outline{background:transparent;color:var(--slate);border:1px solid var(--navy3)}.btn-outline:hover{border-color:var(--slate);color:var(--cream)}
+.btn-purple{background:var(--purple);color:#fff}.btn-purple:hover{background:#7c3aed}
+.stat-chip{margin-left:auto;font-size:.65rem;color:var(--slate)}
+.stat-chip b{color:var(--gold)}
+
+/* ── ANALYTICS PAGE ── */
+.analytics-page{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:18px}
+.analytics-page::-webkit-scrollbar{width:3px}
+.analytics-page::-webkit-scrollbar-thumb{background:var(--navy3);border-radius:4px}
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chart-card{background:var(--navy2);border:1px solid var(--navy3);border-radius:12px;padding:18px}
+.chart-card.full{grid-column:1/-1}
+.chart-title{font-family:'Playfair Display',serif;font-size:.88rem;color:var(--cream);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.chart-wrap{position:relative;height:180px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi-card{background:var(--navy2);border:1px solid var(--navy3);border-radius:10px;padding:14px 16px}
+.kpi-icon{font-size:1.4rem;margin-bottom:6px}
+.kpi-label{font-size:.62rem;color:var(--slate);font-weight:500}
+.kpi-value{font-size:1.2rem;font-weight:700;color:var(--cream);margin:2px 0}
+.kpi-change{font-size:.62rem}
+.kpi-change.up{color:var(--green)}.kpi-change.dn{color:var(--red)}
+.plat-breakdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pb-card{background:var(--navy2);border:1px solid var(--navy3);border-radius:10px;padding:12px 14px;transition:border-color .15s}
+.pb-card:hover{border-color:var(--gold)}
+.pb-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pb-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:900}
+.pb-name{font-size:.72rem;font-weight:600;color:var(--cream)}
+.pb-stat{font-size:.65rem;color:var(--slate);margin-bottom:2px}
+.pb-val{font-size:.82rem;font-weight:700;color:var(--gold)}
+
+/* ── SCRIPT PAGE ── */
+.script-page{flex:1;overflow:hidden;display:grid;grid-template-columns:340px 1fr}
+.script-sidebar{border-right:1px solid var(--navy3);display:flex;flex-direction:column;overflow:hidden}
+.script-sidebar-header{padding:14px 18px;border-bottom:1px solid var(--navy3);flex-shrink:0}
+.script-sidebar-title{font-family:'Playfair Display',serif;font-size:.9rem;color:var(--cream);margin-bottom:12px}
+.script-form{display:flex;flex-direction:column;gap:10px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-label{font-size:.66rem;font-weight:600;color:var(--slate);letter-spacing:.04em}
+.form-input,.form-select,.form-textarea{background:var(--navy3);border:1px solid var(--navy4);border-radius:7px;padding:8px 11px;color:var(--cream);font-size:.73rem;font-family:'Inter',sans-serif;outline:none;transition:border .13s;width:100%}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--slate2)}
+.form-select option{background:var(--navy2)}
+.form-textarea{resize:none;min-height:60px}
+.plat-checks{display:flex;gap:6px;flex-wrap:wrap}
+.plat-chk{padding:4px 10px;border-radius:12px;border:1px solid var(--navy3);font-size:.66rem;font-weight:600;color:var(--slate);cursor:pointer;transition:all .13s}
+.plat-chk.on{border-color:var(--gold);background:rgba(201,168,76,.1);color:var(--cream)}
+.gen-btn{padding:10px;border-radius:8px;background:var(--purple);border:none;color:#fff;font-size:.75rem;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:background .13s;margin-top:4px}
+.gen-btn:hover{background:#7c3aed}
+.gen-btn:disabled{background:var(--navy3);color:var(--slate);cursor:not-allowed}
+.script-output{display:flex;flex-direction:column;overflow:hidden}
+.script-output-header{padding:14px 20px;border-bottom:1px solid var(--navy3);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.script-output-title{font-family:'Playfair Display',serif;font-size:.9rem;color:var(--cream)}
+.script-tabs{display:flex;gap:4px;margin-left:auto}
+.script-tab{padding:4px 12px;border-radius:12px;border:none;background:var(--navy3);color:var(--slate);font-size:.66rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all .13s}
+.script-tab.active{background:var(--purple);color:#fff}
+.script-content{flex:1;overflow-y:auto;padding:18px 20px}
+.script-content::-webkit-scrollbar{width:3px}
+.script-content::-webkit-scrollbar-thumb{background:var(--navy3);border-radius:4px}
+.script-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;text-align:center;color:var(--slate)}
+.script-empty-icon{font-size:2.5rem;opacity:.4}
+.script-result{background:var(--navy2);border:1px solid var(--navy3);border-radius:10px;padding:16px;margin-bottom:12px}
+.script-result-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.script-result-plat{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:900}
+.script-result-name{font-weight:600;font-size:.8rem;color:var(--cream)}
+.script-result-dur{font-size:.65rem;color:var(--slate);margin-left:auto}
+.script-section{margin-bottom:10px}
+.script-section-label{font-size:.62rem;font-weight:700;color:var(--gold);letter-spacing:.06em;margin-bottom:4px}
+.script-section-text{font-size:.73rem;color:var(--cream);line-height:1.6;background:var(--navy3);border-radius:6px;padding:8px 10px}
+.copy-btn{padding:5px 12px;border-radius:6px;background:transparent;border:1px solid var(--navy3);color:var(--slate);font-size:.64rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all .13s;margin-top:6px}
+.copy-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── DUTCHMILK PANEL ── */
+.dm-panel{display:flex;flex-direction:column;background:var(--navy2)}
+.dm-header{padding:12px 16px;border-bottom:1px solid var(--navy3);display:flex;align-items:center;gap:9px;flex-shrink:0}
+.dm-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1E3148 60%,#C9A84C);display:flex;align-items:center;justify-content:center;font-size:1rem;border:2px solid var(--gold);flex-shrink:0}
+.dm-name{font-family:'Playfair Display',serif;font-size:.88rem;color:var(--cream)}
+.dm-role{font-size:.62rem;color:var(--slate);margin-top:1px}
+.dm-badges{display:flex;gap:3px;margin-top:2px}
+.dm-badge{font-size:.52rem;font-weight:700;padding:1px 5px;border-radius:3px}
+.badge-groq{background:rgba(99,102,241,.2);color:#a5b4fc;border:1px solid rgba(99,102,241,.3)}
+
+.badge-live{background:rgba(201,168,76,.12);color:var(--gold);border:1px solid rgba(201,168,76,.25)}
+.badge-line{background:rgba(6,199,85,.15);color:#06C755;border:1px solid rgba(6,199,85,.3)}
+.online-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);flex-shrink:0;margin-left:auto}
+.qa-row{display:flex;gap:4px;padding:7px 13px;border-bottom:1px solid var(--navy3);flex-wrap:wrap;flex-shrink:0}
+.qa-chip{padding:4px 10px;border-radius:14px;background:var(--navy3);border:1px solid transparent;color:var(--slate);font-size:.63rem;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;transition:all .13s;white-space:nowrap}
+.qa-chip:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.07)}
+.chat-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--navy3);border-radius:4px}
+.msg{display:flex;gap:7px;align-items:flex-end}
+.msg.user{flex-direction:row-reverse}
+.msg-av{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700}
+.msg-av.dm{background:linear-gradient(135deg,var(--navy3),var(--gold));color:var(--cream);border:1px solid var(--gold)}
+.msg-av.ceo{background:var(--gold);color:var(--navy)}
+.bubble{max-width:88%;padding:8px 11px;border-radius:12px;font-size:.72rem;line-height:1.55}
+.bubble.dm{background:var(--navy3);color:var(--cream);border-bottom-left-radius:3px}
+.bubble.ceo{background:var(--gold);color:var(--navy);border-bottom-right-radius:3px;font-weight:500}
+.btime{font-size:.56rem;color:var(--slate2);margin-top:2px}
+.msg.user .btime{text-align:right}
+.sugg{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.sugg-chip{padding:3px 8px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.28);border-radius:9px;font-size:.6rem;color:var(--gold);cursor:pointer;transition:background .12s}
+.sugg-chip:hover{background:rgba(201,168,76,.2)}
+.typing{display:flex;gap:4px;align-items:center;padding:3px 0}
+.typing span{width:5px;height:5px;border-radius:50%;background:var(--slate);animation:bounce 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.5}40%{transform:translateY(-5px);opacity:1}}
+.ai-badge{display:inline-flex;align-items:center;gap:3px;font-size:.55rem;color:#a5b4fc;margin-top:4px}
+.chat-input-row{padding:9px 12px;border-top:1px solid var(--navy3);display:flex;gap:6px;align-items:flex-end;flex-shrink:0}
+.chat-input{flex:1;background:var(--navy3);border:1px solid transparent;border-radius:9px;padding:8px 11px;color:var(--cream);font-size:.72rem;font-family:'Inter',sans-serif;outline:none;resize:none;height:36px;max-height:100px;transition:border .13s;line-height:1.4}
+.chat-input:focus{border-color:var(--gold)}
+.chat-input::placeholder{color:var(--slate2)}
+.send-btn{width:34px;height:34px;border-radius:8px;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .13s}
+.send-btn:hover{background:var(--gold2)}
+.send-btn.loading{background:var(--navy3);cursor:not-allowed}
+.send-btn svg{width:13px;fill:var(--navy)}
+
+/* ── LINE NOTIFICATION BANNER ── */
+.line-banner{background:linear-gradient(90deg,rgba(6,199,85,.12),rgba(6,199,85,.04));border-bottom:1px solid rgba(6,199,85,.2);padding:6px 22px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.line-banner-text{font-size:.67rem;color:#06C755}
+.line-input-wrap{display:flex;gap:6px;align-items:center;margin-left:auto}
+.line-input{background:var(--navy3);border:1px solid rgba(6,199,85,.3);border-radius:6px;padding:4px 10px;color:var(--cream);font-size:.67rem;font-family:'Inter',sans-serif;outline:none;width:200px}
+.line-save-btn{padding:4px 12px;border-radius:6px;background:#06C755;border:none;color:#fff;font-size:.65rem;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer}
+.line-ok{font-size:.67rem;color:#06C755;font-weight:600}
+
+/* THUMB COLORS */
+.t1{background:linear-gradient(135deg,#1a2f4a,#2d5a8e)}.t2{background:linear-gradient(135deg,#2a1a3a,#6b3fa0)}
+.t3{background:linear-gradient(135deg,#1a3a2a,#2d8e5a)}.t4{background:linear-gradient(135deg,#3a2a1a,#8e6b2d)}
+.t5{background:linear-gradient(135deg,#3a1a1a,#9e4040)}.t6{background:linear-gradient(135deg,#1a3a3a,#2d8e8e)}
+.t7{background:linear-gradient(135deg,#2a3a1a,#6e8e2d)}.t8{background:linear-gradient(135deg,#3a2a3a,#8e2d8e)}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:200}
+.modal-overlay.open{display:flex}
+.modal{background:var(--navy2);border:1px solid var(--navy3);border-radius:14px;padding:22px;width:500px;max-width:93vw;max-height:88vh;overflow-y:auto}
+.modal::-webkit-scrollbar{width:3px}
+.modal::-webkit-scrollbar-thumb{background:var(--navy3);border-radius:4px}
+.modal-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--cream);margin-bottom:3px}
+.modal-sub{font-size:.68rem;color:var(--slate);margin-bottom:16px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-col{display:flex;flex-direction:column;gap:4px}
+.form-col.full{grid-column:1/-1}
+.form-label{font-size:.65rem;font-weight:600;color:var(--slate);letter-spacing:.04em}
+.emoji-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
+.emoji-opt{width:32px;height:32px;border-radius:7px;background:var(--navy3);border:1px solid var(--navy4);display:flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;transition:all .13s}
+.emoji-opt.sel{border-color:var(--gold);background:rgba(201,168,76,.15)}
+.modal-actions{display:flex;gap:7px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid var(--navy3)}
+.modal-cancel{padding:7px 16px;border-radius:6px;background:transparent;border:1px solid var(--navy3);color:var(--slate);font-size:.7rem;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer}
+.modal-save{padding:7px 16px;border-radius:6px;background:var(--gold);border:none;color:var(--navy);font-size:.7rem;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer}
+.pub-plats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.pub-plat{padding:12px;border-radius:9px;border:1px solid var(--navy3);cursor:pointer;transition:all .13s}
+.pub-plat:hover{border-color:var(--slate)}.pub-plat.sel{border-color:var(--gold);background:rgba(201,168,76,.07)}
+.pub-plat-row{display:flex;align-items:center;gap:9px}
+.pub-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900}
+.pub-name{font-size:.78rem;font-weight:600;color:var(--cream)}
+.pub-sub{font-size:.62rem;color:var(--slate);margin-top:1px}
+.pub-stat{font-size:.62rem;color:var(--gold);margin-top:5px}
+
+/* NOTIF DROPDOWN */
+.notif-dropdown{position:absolute;top:100%;right:0;margin-top:6px;background:var(--navy2);border:1px solid var(--navy3);border-radius:10px;width:280px;z-index:300;overflow:hidden;display:none}
+.notif-dropdown.open{display:block}
+.notif-header{padding:10px 14px;border-bottom:1px solid var(--navy3);font-size:.72rem;font-weight:700;color:var(--cream)}
+.notif-item{padding:10px 14px;border-bottom:1px solid var(--navy3);cursor:pointer;transition:background .12s}
+.notif-item:last-child{border-bottom:none}
+.notif-item:hover{background:var(--navy3)}
+.notif-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.notif-item-row{display:flex;gap:8px;align-items:flex-start}
+.notif-text{font-size:.68rem;color:var(--cream);line-height:1.4}
+.notif-time{font-size:.6rem;color:var(--slate);margin-top:2px}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:var(--navy);padding:9px 18px;border-radius:9px;font-size:.75rem;font-weight:700;z-index:999;transition:transform .3s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-avatar">🤖</div>
+    <div class="login-logo">DutchMilk</div>
+    <div class="login-sub">CEO Clip Studio — กรุณาเข้าสู่ระบบ</div>
+    <div class="login-field">
+      <div class="login-label">EMAIL</div>
+      <input class="login-input" id="loginEmail" type="email" placeholder="ceo@dutchmilk.com" value="ceo@dutchmilk.com">
+    </div>
+    <div class="login-field">
+      <div class="login-label">PASSWORD</div>
+      <input class="login-input" id="loginPass" type="password" placeholder="••••••••" value="dutchmilk2024"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-err" id="loginErr"></div>
+    <button class="login-btn" onclick="doLogin()">🔐 เข้าสู่ระบบ CEO</button>
+    <div class="login-hint">Demo: ceo@dutchmilk.com / dutchmilk2024</div>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="appShell" style="display:none;flex-direction:column;height:100vh;overflow:hidden">
+
+  <!-- LINE BANNER -->
+  <div class="line-banner" id="lineBanner">
+    <span style="font-size:1rem">💚</span>
+    <span class="line-line-text" id="lineBannerText" style="font-size:.67rem;color:#06C755">เชื่อม Line OA เพื่อรับแจ้งเตือนจาก DutchMilk</span>
+    <div class="line-input-wrap" id="lineInputWrap">
+      <input class="line-input" id="lineTokenInput" placeholder="Line Channel Access Token…">
+      <button class="line-save-btn" onclick="saveLineToken()">บันทึก</button>
+    </div>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo">Clip<span>Studio</span></div>
+    <div class="topbar-tabs">
+      <button class="tab-nav active" onclick="showPage('clips',this)">📹 สินค้า</button>
+      <button class="tab-nav" onclick="showPage('analytics',this)">📊 Analytics</button>
+      <button class="tab-nav" onclick="showPage('script',this)">✍️ Script AI</button>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-wrap" onclick="toggleNotif()">
+        <span class="notif-icon">🔔</span>
+        <div class="notif-badge" id="notifBadge">3</div>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-header">🔔 การแจ้งเตือน</div>
+          <div class="notif-item"><div class="notif-item-row"><div class="notif-dot" style="background:var(--green)"></div><div><div class="notif-text">🎵 TikTok "เจลล้างหน้า" ถึง 300K views แล้ว!</div><div class="notif-time">2 นาทีที่แล้ว</div></div></div></div>
+          <div class="notif-item"><div class="notif-item-row"><div class="notif-dot" style="background:var(--orange)"></div><div><div class="notif-text">🛍 Shopee Flash Sale เริ่ม 20:00 น. วันนี้</div><div class="notif-time">15 นาทีที่แล้ว</div></div></div></div>
+          <div class="notif-item"><div class="notif-item-row"><div class="notif-dot" style="background:var(--fb)"></div><div><div class="notif-text">📘 "เซรั่มวิตามินซี" รอ CEO อนุมัติ 3 วันแล้ว</div><div class="notif-time">1 ชั่วโมงที่แล้ว</div></div></div></div>
+        </div>
+      </div>
+      <div class="ceo-badge" id="ceoBadge">CEO</div>
+      <button class="logout-btn" onclick="doLogout()">ออกจากระบบ</button>
+    </div>
+  </div>
+      </div>
+
+  <!-- PLATFORM BAR -->
+  <div class="platform-bar">
+    <div class="plat-pill all active" onclick="filterPlat('all',this)">🌐 ทั้งหมด <span class="plat-count" id="cnt-all">0</span></div>
+    <div class="plat-pill fb" onclick="filterPlat('Facebook',this)">📘 Facebook <span class="plat-count" id="cnt-fb">0</span></div>
+    <div class="plat-pill tt" onclick="filterPlat('TikTok',this)">🎵 TikTok <span class="plat-count" id="cnt-tt">0</span></div>
+    <div class="plat-pill sp" onclick="filterPlat('Shopee',this)">🛍 Shopee <span class="plat-count" id="cnt-sp">0</span></div>
+    <div class="plat-pill xx" onclick="filterPlat('X',this)">𝕏 X <span class="plat-count" id="cnt-xx">0</span></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row" id="statsRow"></div>
+
+  <!-- PAGES -->
+
+  <!-- PAGE: CLIPS -->
+  <div class="page active" id="page-clips">
+    <div class="main-layout">
+      <div class="clip-panel">
+        <div class="panel-header">
+          <div class="panel-top-row">
+            <div class="panel-title" id="panelTitle">สินค้าของคุณ</div>
+            <div class="search-wrap"><span class="search-icon">🔍</span><input type="text" placeholder="ค้นหา…" oninput="searchProducts(this.value)"></div>
+          </div>
+          <div class="filter-row">
+            <button class="filter-btn active" onclick="filterSt('all',this)">ทั้งหมด</button>
+            <button class="filter-btn" onclick="filterSt('live',this)">🟢 Live</button>
+            <button class="filter-btn" onclick="filterSt('review',this)">🟡 รอตรวจ</button>
+            <button class="filter-btn" onclick="filterSt('draft',this)">⚪ แบบร่าง</button>
+          </div>
+        </div>
+        <div class="clip-grid" id="clipGrid"></div>
+        <div class="action-bar">
+          <button class="btn btn-gold" onclick="openAddModal()">＋ เพิ่มสินค้า</button>
+          <button class="btn btn-outline" onclick="openPubModal()">🛒 ปักตะกร้า</button>
+          <button class="btn btn-purple" onclick="showPage('script',document.querySelectorAll('.tab-nav')[2])">✍️ สร้างสคริปต์</button>
+          <div class="stat-chip">สินค้า <b id="totalCount">0</b></div>
+        </div>
+      </div>
+      <!-- DUTCHMILK -->
+      <div id="dmPanel" class="dm-panel"></div>
+    </div>
+  </div>
+
+  <!-- PAGE: ANALYTICS -->
+  <div class="page" id="page-analytics">
+    <div class="main-layout">
+      <div class="analytics-page" id="analyticsContent"></div>
+      <div id="dmPanel2" class="dm-panel"></div>
+    </div>
+  </div>
+
+  <!-- PAGE: SCRIPT -->
+  <div class="page" id="page-script">
+    <div class="script-page">
+      <div class="script-sidebar">
+        <div class="script-sidebar-header">
+          <div class="script-sidebar-title">✍️ Script Generator</div>
+          <div class="script-form" id="scriptForm">
+            <div class="form-group">
+              <div class="form-label">ชื่อสินค้า *</div>
+              <select class="form-select" id="sg-product" onchange="fillFromProduct()">
+                <option value="">— เลือกสินค้า หรือกรอกเอง —</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <div class="form-label">ชื่อสินค้า (กรอกเอง)</div>
+              <input class="form-input" id="sg-name" placeholder="เช่น ครีมหน้าใส SPF50+">
+            </div>
+            <div class="form-group">
+              <div class="form-label">ราคา (฿)</div>
+              <input class="form-input" id="sg-price" type="number" placeholder="390">
+            </div>
+            <div class="form-group">
+              <div class="form-label">จุดเด่นสินค้า</div>
+              <textarea class="form-textarea" id="sg-desc" placeholder="เช่น ลดสิว กระจ่างใส ใช้ได้ทุกวัน…"></textarea>
+            </div>
+            <div class="form-group">
+              <div class="form-label">กลุ่มเป้าหมาย</div>
+              <input class="form-input" id="sg-target" placeholder="เช่น ผู้หญิง 20-35 ปี ผิวมัน">
+            </div>
+            <div class="form-group">
+              <div class="form-label">แพลตฟอร์ม</div>
+              <div class="plat-checks" id="sgPlatChecks">
+                <div class="plat-chk on" onclick="this.classList.toggle('on')">🎵 TikTok</div>
+                <div class="plat-chk on" onclick="this.classList.toggle('on')">📘 Facebook</div>
+                <div class="plat-chk" onclick="this.classList.toggle('on')">🛍 Shopee</div>
+                <div class="plat-chk" onclick="this.classList.toggle('on')">𝕏 X</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-label">สไตล์คลิป</div>
+              <select class="form-select" id="sg-style">
+                <option value="สนุก เร็ว ดึงดูด">🔥 สนุก เร็ว ดึงดูด</option>
+                <option value="น่าเชื่อถือ มีข้อมูล">📊 น่าเชื่อถือ มีข้อมูล</option>
+                <option value="อารมณ์ดี เป็นกันเอง">😊 อารมณ์ดี เป็นกันเอง</option>
+                <option value="หรูหรา พรีเมียม">✨ หรูหรา พรีเมียม</option>
+              </select>
+            </div>
+            <button class="gen-btn" id="genBtn" onclick="generateScript()">⚡ สร้างสคริปต์ด้วย Groq AI</button>
+          </div>
+        </div>
+      </div>
+      <div class="script-output">
+        <div class="script-output-header">
+          <div class="script-output-title">สคริปต์ที่สร้าง</div>
+          <div class="script-tabs" id="scriptTabs"></div>
+        </div>
+        <div class="script-content" id="scriptContent">
+          <div class="script-empty">
+            <div class="script-empty-icon">✍️</div>
+            <div style="font-size:.8rem;color:var(--slate)">กรอกข้อมูลสินค้าแล้วกด</div>
+            <div style="font-size:.75rem;color:var(--slate2)">"สร้างสคริปต์ด้วย Groq AI"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end appShell -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-title">➕ เพิ่มสินค้าจริง</div>
+    <div class="modal-sub">DutchMilk จะวิเคราะห์และแนะนำกลยุทธ์ทันทีค่ะ</div>
+    <div class="form-grid">
+      <div class="form-col full"><div class="form-label">ชื่อสินค้า *</div><input class="form-input" id="f-name" placeholder="เช่น ครีมหน้าใส SPF50+"></div>
+      <div class="form-col"><div class="form-label">ราคา (฿) *</div><input class="form-input" id="f-price" type="number" placeholder="390"></div>
+      <div class="form-col"><div class="form-label">สต็อก (ชิ้น)</div><input class="form-input" id="f-stock" type="number" placeholder="100"></div>
+      <div class="form-col full"><div class="form-label">คำอธิบาย</div><textarea class="form-input" id="f-desc" style="resize:none;min-height:60px" placeholder="จุดเด่น สรรพคุณ…"></textarea></div>
+      <div class="form-col"><div class="form-label">หมวดหมู่</div>
+        <select class="form-input" id="f-cat"><option>สกินแคร์</option><option>เครื่องสำอาง</option><option>บำรุงผม</option><option>อาหารเสริม</option><option>ไลฟ์สไตล์</option><option>อื่นๆ</option></select>
+      </div>
+      <div class="form-col"><div class="form-label">สถานะ</div>
+        <select class="form-input" id="f-status"><option value="draft">แบบร่าง</option><option value="review">รอตรวจ</option><option value="live">Live พร้อมขาย</option></select>
+      </div>
+      <div class="form-col full"><div class="form-label">แพลตฟอร์ม</div>
+        <div class="plat-checks" id="addPlatChecks">
+          <div class="plat-chk on" onclick="this.classList.toggle('on')">📘 Facebook</div>
+          <div class="plat-chk on" onclick="this.classList.toggle('on')">🎵 TikTok</div>
+          <div class="plat-chk on" onclick="this.classList.toggle('on')">🛍 Shopee</div>
+          <div class="plat-chk" onclick="this.classList.toggle('on')">𝕏 X</div>
+        </div>
+      </div>
+      <div class="form-col full"><div class="form-label">ไอคอน</div>
+        <div class="emoji-row" id="emojiRow">
+          <div class="emoji-opt sel" onclick="selEmoji(this)">🧴</div><div class="emoji-opt" onclick="selEmoji(this)">💄</div>
+          <div class="emoji-opt" onclick="selEmoji(this)">✨</div><div class="emoji-opt" onclick="selEmoji(this)">💊</div>
+          <div class="emoji-opt" onclick="selEmoji(this)">🌸</div><div class="emoji-opt" onclick="selEmoji(this)">🍯</div>
+          <div class="emoji-opt" onclick="selEmoji(this)">⚗️</div><div class="emoji-opt" onclick="selEmoji(this)">🫧</div>
+          <div class="emoji-opt" onclick="selEmoji(this)">💈</div><div class="emoji-opt" onclick="selEmoji(this)">🥤</div>
+          <div class="emoji-opt" onclick="selEmoji(this)">👁</div><div class="emoji-opt" onclick="selEmoji(this)">🎭</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeAddModal()">ยกเลิก</button>
+      <button class="modal-save" onclick="saveProduct()">💾 บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pubModal">
+  <div class="modal">
+    <div class="modal-title">🛒 ปักตะกร้าสินค้า</div>
+    <div class="modal-sub">เลือกแพลตฟอร์มที่ต้องการปัก</div>
+    <div class="pub-plats">
+      <div class="pub-plat sel" onclick="this.classList.toggle('sel')">
+        <div class="pub-plat-row"><div class="pub-icon" style="background:var(--fb);color:#fff">f</div><div><div class="pub-name">Facebook</div><div class="pub-sub">Facebook Shop / Reels</div></div></div>
+        <div class="pub-stat">128K followers · Shop ✅</div>
+      </div>
+      <div class="pub-plat sel" onclick="this.classList.toggle('sel')">
+        <div class="pub-plat-row"><div class="pub-icon" style="background:#000;border:1px solid #444;color:#fff">♪</div><div><div class="pub-name">TikTok</div><div class="pub-sub">TikTok Shop / FYP</div></div></div>
+        <div class="pub-stat">342K followers · Shop ✅</div>
+      </div>
+      <div class="pub-plat sel" onclick="this.classList.toggle('sel')">
+        <div class="pub-plat-row"><div class="pub-icon" style="background:var(--sp)">🛍</div><div><div class="pub-name">Shopee</div><div class="pub-sub">Shopee Mall / Live</div></div></div>
+        <div class="pub-stat">⭐ 4.9 · Mall ✅</div>
+      </div>
+      <div class="pub-plat" onclick="this.classList.toggle('sel')">
+        <div class="pub-plat-row"><div class="pub-icon" style="background:#000;border:1px solid #444;color:#fff;font-size:1rem">𝕏</div><div><div class="pub-name">X (Twitter)</div><div class="pub-sub">X Posts / Video</div></div></div>
+        <div class="pub-stat">89K followers · Verified ✅</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closePubModal()">ยกเลิก</button>
+      <button class="modal-save" onclick="confirmPub()">🚀 ปักตะกร้าเลย</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── KEYS ──
+const GROQ_KEY = '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';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
+
+const SYS = `คุณคือ DutchMilk เลขา AI ส่วนตัวของ CEO ระบบ ClipStudio มี 4 แพลตฟอร์ม: Facebook, TikTok, Shopee, X
+ช่วย CEO วิเคราะห์สินค้า กลยุทธ์ขาย เวลาปักตะกร้า และตลาดสินค้าความงาม
+ตอบภาษาไทย กระชับ ชัดเจน มี emoji`;
+
+// ── AUTH ──
+const ACCOUNTS = { 'ceo@dutchmilk.com':'dutchmilk2024', 'admin@dutchmilk.com':'admin1234' };
+let currentUser = null;
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  const err   = document.getElementById('loginErr');
+  if (!ACCOUNTS[email] || ACCOUNTS[email] !== pass) { err.textContent = '❌ Email หรือ Password ไม่ถูกต้อง'; return; }
+  currentUser = email;
+  sessionStorage.setItem('dm_user', email);
+  err.textContent = '';
+  document.getElementById('loginScreen').style.display = 'none';
+  const app = document.getElementById('appShell');
+  app.style.display = 'flex';
+  document.getElementById('ceoBadge').textContent = email.split('@')[0].toUpperCase();
+  initApp();
+}
+function doLogout() {
+  sessionStorage.removeItem('dm_user');
+  currentUser = null;
+  document.getElementById('appShell').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+// Auto-login if session exists
+window.addEventListener('DOMContentLoaded', () => {
+  const u = sessionStorage.getItem('dm_user');
+  if (u && ACCOUNTS[u]) {
+    document.getElementById('loginEmail').value = u;
+    document.getElementById('loginPass').value = ACCOUNTS[u];
+    currentUser = u;
+    document.getElementById('loginScreen').style.display = 'none';
+    const app = document.getElementById('appShell');
+    app.style.display = 'flex';
+    document.getElementById('ceoBadge').textContent = u.split('@')[0].toUpperCase();
+    initApp();
+  }
+});
+
+// ── LINE OA ──
+let lineToken = localStorage.getItem('dm_line_token') || '';
+function saveLineToken() {
+  const t = document.getElementById('lineTokenInput').value.trim();
+  if (!t) return;
+  lineToken = t;
+  localStorage.setItem('dm_line_token', t);
+  document.getElementById('lineInputWrap').innerHTML = '<span class="line-ok">✅ Line OA เชื่อมแล้ว — DutchMilk จะแจ้งเตือนผ่าน Line ค่ะ</span>';
+  document.getElementById('lineBannerText').textContent = '💚 Line OA เชื่อมแล้ว';
+  showToast('✅ เชื่อม Line OA สำเร็จ!');
+}
+function initLineBanner() {
+  if (lineToken) {
+    document.getElementById('lineInputWrap').innerHTML = '<span class="line-ok">✅ Line OA เชื่อมแล้ว</span>';
+    document.getElementById('lineBannerText').textContent = '💚 Line OA เชื่อมแล้ว';
+  }
+}
+async function sendLine(msg) {
+  if (!lineToken) return;
+  try {
+    await fetch('https://api.line.me/v2/bot/message/broadcast', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${lineToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [{ type: 'text', text: `🤖 DutchMilk แจ้ง:\n${msg}` }] })
+    });
+  } catch(e) {}
+}
+
+// ── NOTIFICATIONS ──
+function toggleNotif() {
+  document.getElementById('notifDropdown').classList.toggle('open');
+  document.getElementById('notifBadge').style.display = 'none';
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.notif-wrap')) document.getElementById('notifDropdown').classList.remove('open');
+});
+
+// ── STORAGE & STATE ──
+const STORE = 'ceo_products_v2';
+let products = JSON.parse(localStorage.getItem(STORE) || '[]');
+function save() { localStorage.setItem(STORE, JSON.stringify(products)); }
+let curPlat='all', curSt='all', searchTerm='', selectedEmoji='🧴', isLoading=false;
+const chatHist=[], chatHist2=[];
+
+// ── INIT APP ──
+function initApp() {
+  initLineBanner();
+  renderProducts();
+  renderStats();
+  buildDMPanel('dmPanel', chatHist);
+  buildDMPanel('dmPanel2', chatHist2);
+  buildAnalytics();
+  updateScriptProductList();
+      setTimeout(() => {
+    dmRespond('dmPanel', chatHist, `สวัสดีค่ะ คุณ CEO! 🎉 ระบบ Priority 1 ทั้งหมดพร้อมแล้วค่ะ\n\n🔐 Login ระบบ\n📊 Analytics Dashboard\n✍️ Script Generator (Groq AI)\n💚 Line OA Notification\n\n${products.length > 0 ? `มีสินค้า ${products.length} รายการในระบบ ต้องการให้ช่วยอะไรคะ?` : 'กด "เพิ่มสินค้า" เพื่อเริ่มต้นได้เลยค่ะ!'}`,
+      ['เพิ่มสินค้าแรก','สร้างสคริปต์คลิป','ดู Analytics','ปักตะกร้าวันนี้'], false);
+  }, 500);
+}
+
+// ── GROQ ──
+async function callGroq(history, userMsg) {
+  let ctx = userMsg;
+  if (products.length) {
+    const ps = products.slice(0,8).map(p=>`${p.name}(${p.cat})฿${p.price}สต็อก${p.stock||'?'}${p.status}`).join('|');
+    ctx += `\n[สินค้า CEO: ${ps}]`;
+  }
+  $${d.c?.toFixed(2)}(${d.dp>=0?'+':''}${d.dp?.toFixed(2)}%)`).join(' ')}]`;
+  }
+  history.push({ role:'user', content: ctx });
+  const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method:'POST',
+    headers:{ 'Authorization':`Bearer ${GROQ_KEY}`, 'Content-Type':'application/json' },
+    body: JSON.stringify({ model:GROQ_MODEL, max_tokens:600, temperature:0.7,
+      messages:[{ role:'system', content:SYS }, ...history.slice(-10)] })
+  });
+  if (!r.ok) throw new Error(`Groq ${r.status}`);
+  const d = await r.json();
+  const reply = d.choices[0].message.content;
+  history.push({ role:'assistant', content: reply });
+  return reply;
+}
+
+// ── DutchMilk PANEL ──
+function buildDMPanel(panelId, history) {
+  const el = document.getElementById(panelId);
+  el.innerHTML = `
+    <div class="dm-header">
+      <div class="dm-avatar">🤖</div>
+      <div>
+        <div class="dm-name">DutchMilk</div>
+        <div class="dm-role">AI Secretary · 4 แพลตฟอร์ม</div>
+        <div class="dm-badges">
+          <span class="dm-badge badge-groq">⚡ Groq</span>
+                    <span class="dm-badge badge-live">💾 ข้อมูลจริง</span>
+          <span class="dm-badge badge-line">💚 Line</span>
+        </div>
+      </div>
+      <div class="online-dot"></div>
+    </div>
+    <div class="qa-row">
+      <button class="qa-chip" onclick="quickCmd('${panelId}',${panelId==='dmPanel'?'chatHist':'chatHist2'},'สินค้าไหนควรปักตะกร้าวันนี้?')">🛒 ปักวันนี้</button>
+      <button class="qa-chip" onclick="quickCmd('${panelId}',${panelId==='dmPanel'?'chatHist':'chatHist2'},'สรุปยอดขายทุกแพลตฟอร์ม')">📊 ยอดรวม</button>
+            <button class="qa-chip" onclick="quickCmd('${panelId}',${panelId==='dmPanel'?'chatHist':'chatHist2'},'วิเคราะห์ตลาดสินค้าความงามและแนะนำกลยุทธ์')">💡 กลยุทธ์</button>
+    </div>
+    <div class="chat-msgs" id="msgs-${panelId}"></div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="inp-${panelId}" placeholder="ถาม DutchMilk…" rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendDM('${panelId}',${panelId==='dmPanel'?'chatHist':'chatHist2'})}"
+        oninput="this.style.height='36px';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+      <button class="send-btn" id="sbtn-${panelId}" onclick="sendDM('${panelId}',${panelId==='dmPanel'?'chatHist':'chatHist2'})">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>`;
+}
+
+function appendUser(panelId, text) {
+  const c = document.getElementById(`msgs-${panelId}`);
+  const d = document.createElement('div'); d.className = 'msg user';
+  d.innerHTML = `<div><div class="bubble ceo">${esc(text)}</div><div class="btime">${getTime()}</div></div><div class="msg-av ceo">CEO</div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function showTypingDM(panelId) {
+  const c = document.getElementById(`msgs-${panelId}`);
+  const t = document.createElement('div'); t.className='msg'; t.id=`typing-${panelId}`;
+  t.innerHTML=`<div class="msg-av dm">🤖</div><div class="bubble dm"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  c.appendChild(t); c.scrollTop=c.scrollHeight;
+}
+function hideTypingDM(panelId) { const t=document.getElementById(`typing-${panelId}`); if(t) t.remove(); }
+function dmRespond(panelId, history, text, chips=[], isGroq=true) {
+  const c = document.getElementById(`msgs-${panelId}`);
+  const d = document.createElement('div'); d.className='msg';
+  const ch = chips.length ? `<div class="sugg">${chips.map(ch=>`<span class="sugg-chip" onclick="quickCmd('${panelId}',${panelId==='dmPanel'?'chatHist':'chatHist2'},'${ch.replace(/'/g,"\\'")}')">${ch}</span>`).join('')}</div>`:''
+  const badge = isGroq ? '<div class="ai-badge">⚡ Groq AI · llama-3.3-70b</div>' : '';
+  d.innerHTML=`<div class="msg-av dm">🤖</div><div><div class="bubble dm">${text.replace(/\n/g,'<br>')}${ch}${badge}</div><div class="btime">${getTime()}</div></div>`;
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+function quickCmd(panelId, history, text) { appendUser(panelId, text); processChat(panelId, history, text); }
+async function processChat(panelId, history, text) {
+  if (isLoading) return; isLoading=true;
+  const sb = document.getElementById(`sbtn-${panelId}`); if(sb) sb.classList.add('loading');
+  showTypingDM(panelId);
+  try {
+    const r = await callGroq(history, text);
+    hideTypingDM(panelId);
+    dmRespond(panelId, history, r, [], true);
+    // Send to Line if important
+    if (text.includes('ปัก')||text.includes('อนุมัติ')||text.includes('ขาย')) sendLine(r.substring(0,200));
+  } catch(e) {
+    hideTypingDM(panelId);
+    dmRespond(panelId, history, `ขออภัยค่ะ เกิดข้อผิดพลาด: ${e.message}`, [], false);
+  } finally { isLoading=false; if(sb) sb.classList.remove('loading'); }
+}
+function sendDM(panelId, history) {
+  const inp = document.getElementById(`inp-${panelId}`);
+  const t = inp.value.trim(); if(!t||isLoading) return;
+  inp.value=''; inp.style.height='36px';
+  appendUser(panelId, t); processChat(panelId, history, t);
+}
+
+// ── PRODUCTS ──
+const colors=['t1','t2','t3','t4','t5','t6','t7','t8'];
+const pc={Facebook:'#1877F2',TikTok:'#111',Shopee:'#EE4D2D',X:'#111'};
+const pe={Facebook:'f',TikTok:'♪',Shopee:'🛍',X:'𝕏'};
+
+function renderProducts() {
+  const grid = document.getElementById('clipGrid');
+  const f = products.filter(p => {
+    const mp = curPlat==='all' || p.platforms?.includes(curPlat);
+    const ms = curSt==='all' || p.status===curSt;
+    const mq = p.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return mp && ms && mq;
+  });
+  document.getElementById('totalCount').textContent = f.length;
+  document.getElementById('cnt-all').textContent = products.length;
+  [['Facebook','fb'],['TikTok','tt'],['Shopee','sp'],['X','xx']].forEach(([pl,id])=>{
+    const el=document.getElementById('cnt-'+id); if(el) el.textContent=products.filter(p=>p.platforms?.includes(pl)).length;
+  });
+  if (!f.length) {
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div>
+      <div class="empty-title">${products.length===0?'ยังไม่มีสินค้า':'ไม่พบสินค้าที่ค้นหา'}</div>
+      <div class="empty-sub">${products.length===0?'กด "เพิ่มสินค้า" เพื่อเริ่มต้นได้เลยค่ะ':'ลองเปลี่ยน filter หรือคำค้นหา'}</div>
+      ${products.length===0?'<button class="empty-btn" onclick="openAddModal()">➕ เพิ่มสินค้าแรก</button>':''}
+    </div>`;
+    return;
+  }
+  grid.innerHTML = f.map((p,i)=>{
+    const cl=colors[i%colors.length]; const fp=p.platforms?.[0]||'TikTok';
+    return `<div class="clip-card" onclick="selectProd('${p.id}','${p.name.replace(/'/g,"\\'")}')">
+      <div class="clip-thumb ${cl}">
+        <div class="thumb-inner"><div style="font-size:1.9rem">${p.emoji||'📦'}</div></div>
+        <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="status-dot ${p.status==='live'?'dot-live':p.status==='review'?'dot-review':'dot-draft'}"></div>
+        <div class="plat-badge" style="background:${pc[fp]||'#333'};color:#fff">${pe[fp]||'?'}</div>
+      </div>
+      <div class="clip-info">
+        <div class="clip-name">${p.name}</div>
+        <div class="clip-price">฿${Number(p.price).toLocaleString()}</div>
+        <div class="clip-meta"><span class="clip-plat-tag">${p.cat||'สินค้า'}</span><span class="clip-stock">📦${p.stock||0}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderStats() {
+  const live=products.filter(p=>p.status==='live').length;
+  const rev=products.filter(p=>p.status==='live').reduce((s,p)=>s+Number(p.price||0),0);
+  const stock=products.reduce((s,p)=>s+Number(p.stock||0),0);
+  const cats=[...new Set(products.map(p=>p.cat))].length;
+  const rows=[
+    {l:'สินค้าทั้งหมด',v:products.length,c:'รายการ'},{l:'Live ขายได้',v:live,c:'รายการ'},
+    {l:'มูลค่าราคารวม',v:'฿'+rev.toLocaleString(),c:''},{l:'สต็อกรวม',v:stock,c:'ชิ้น'},{l:'หมวดหมู่',v:cats||0,c:'ประเภท'}
+  ];
+  document.getElementById('statsRow').innerHTML=rows.map(r=>`<div class="stat-box"><div class="stat-label">${r.l}</div><div class="stat-value">${r.v}</div><div class="stat-change up">${r.c}</div></div>`).join('');
+}
+
+function filterPlat(pl,el){curPlat=pl;document.querySelectorAll('.plat-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');document.getElementById('panelTitle').textContent=pl==='all'?'สินค้าของคุณ':'สินค้าบน '+pl;renderProducts();}
+function filterSt(s,btn){curSt=s;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderProducts();}
+function searchProducts(v){searchTerm=v;renderProducts();}
+function selectProd(id,name){
+  document.querySelectorAll('.clip-card').forEach(c=>c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  quickCmd('dmPanel',chatHist,`วิเคราะห์สินค้า "${name}" และแนะนำกลยุทธ์การขายแต่ละแพลตฟอร์ม รวมถึงเวลาที่ดีที่สุดในการปักตะกร้า`);
+}
+
+// ADD PRODUCT
+let selEmoji_val='🧴';
+function selEmoji(el){document.querySelectorAll('.emoji-opt').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');selEmoji_val=el.textContent;}
+function openAddModal(){document.getElementById('addModal').classList.add('open');}
+function closeAddModal(){document.getElementById('addModal').classList.remove('open');}
+function saveProduct(){
+  const name=document.getElementById('f-name').value.trim();
+  const price=document.getElementById('f-price').value;
+  if(!name||!price){showToast('❌ กรุณากรอกชื่อและราคา');return;}
+  const plats=[...document.querySelectorAll('#addPlatChecks .plat-chk.on')].map(e=>{
+    const t=e.textContent; if(t.includes('Facebook'))return'Facebook';if(t.includes('TikTok'))return'TikTok';if(t.includes('Shopee'))return'Shopee';if(t.includes('X'))return'X'; return t.trim();
+  });
+  const p={id:'p_'+Date.now(),name,price:Number(price),stock:Number(document.getElementById('f-stock').value)||0,
+    desc:document.getElementById('f-desc').value.trim(),cat:document.getElementById('f-cat').value,
+    status:document.getElementById('f-status').value,platforms:plats.length?plats:['TikTok'],emoji:selEmoji_val,createdAt:new Date().toISOString()};
+  products.unshift(p); save(); renderProducts(); renderStats(); updateScriptProductList(); closeAddModal();
+  document.getElementById('f-name').value=''; document.getElementById('f-price').value=''; document.getElementById('f-stock').value=''; document.getElementById('f-desc').value='';
+  showToast('✅ เพิ่มสินค้าแล้ว!');
+  sendLine(`เพิ่มสินค้าใหม่: ${name} ราคา ฿${price}`);
+  quickCmd('dmPanel',chatHist,`เพิ่งเพิ่มสินค้า "${name}" ราคา ฿${price} หมวด ${p.cat} บน ${p.platforms.join(',')} ช่วยแนะนำกลยุทธ์และเวลาปักตะกร้าที่ดีสุดหน่อยค่ะ`);
+}
+
+// PUBLISH MODAL
+function openPubModal(){if(!products.length){showToast('⚠️ เพิ่มสินค้าก่อนนะคะ');return;}document.getElementById('pubModal').classList.add('open');}
+function closePubModal(){document.getElementById('pubModal').classList.remove('open');}
+function confirmPub(){
+  const sels=[...document.querySelectorAll('.pub-plat.sel .pub-name')].map(e=>e.textContent);
+  closePubModal(); if(!sels.length){showToast('⚠️ เลือกแพลตฟอร์มก่อน');return;}
+  showToast('🚀 ปักตะกร้า '+sels.join(', ')+' แล้ว!');
+  sendLine(`ปักตะกร้าบน ${sels.join(', ')} สำเร็จ! 🚀`);
+  quickCmd('dmPanel',chatHist,`ปักตะกร้าบน ${sels.join(', ')} แล้ว ช่วยวิเคราะห์ผลที่คาดการณ์และแนะนำขั้นตอนต่อไปหน่อยค่ะ`);
+}
+
+// ── ANALYTICS ──
+let charts = {};
+function buildAnalytics() {
+  const el = document.getElementById('analyticsContent');
+  const live=products.filter(p=>p.status==='live').length;
+  const rev=products.filter(p=>p.status==='live').reduce((s,p)=>s+Number(p.price||0),0);
+  const plats=['Facebook','TikTok','Shopee','X'];
+  const platCounts=plats.map(pl=>products.filter(p=>p.platforms?.includes(pl)).length);
+  el.innerHTML=`
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-icon">📦</div><div class="kpi-label">สินค้าทั้งหมด</div><div class="kpi-value">${products.length}</div><div class="kpi-change up">▲ รายการ</div></div>
+      <div class="kpi-card"><div class="kpi-icon">🟢</div><div class="kpi-label">Live ขายได้</div><div class="kpi-value">${live}</div><div class="kpi-change up">▲ รายการ</div></div>
+      <div class="kpi-card"><div class="kpi-icon">💰</div><div class="kpi-label">มูลค่าราคารวม</div><div class="kpi-value">฿${rev.toLocaleString()}</div><div class="kpi-change up">▲ สะสม</div></div>
+      <div class="kpi-card"><div class="kpi-icon">📊</div><div class="kpi-label">Engagement รวม</div><div class="kpi-value">6.4%</div><div class="kpi-change dn">▼ -0.3%</div></div>
+    </div>
+    <div class="plat-breakdown">
+      <div class="pb-card"><div class="pb-top"><div class="pb-icon" style="background:var(--fb);color:#fff;font-weight:900">f</div><div class="pb-name">Facebook</div></div><div class="pb-stat">สินค้า</div><div class="pb-val">${platCounts[0]} รายการ</div></div>
+      <div class="pb-card"><div class="pb-top"><div class="pb-icon" style="background:#222;color:#fff;font-weight:900">♪</div><div class="pb-name">TikTok</div></div><div class="pb-stat">สินค้า</div><div class="pb-val">${platCounts[1]} รายการ</div></div>
+      <div class="pb-card"><div class="pb-top"><div class="pb-icon" style="background:var(--sp)">🛍</div><div class="pb-name">Shopee</div></div><div class="pb-stat">สินค้า</div><div class="pb-val">${platCounts[2]} รายการ</div></div>
+      <div class="pb-card"><div class="pb-top"><div class="pb-icon" style="background:#222;color:#fff;font-weight:900;font-size:.9rem">𝕏</div><div class="pb-name">X</div></div><div class="pb-stat">สินค้า</div><div class="pb-val">${platCounts[3]} รายการ</div></div>
+    </div>
+    <div class="analytics-grid">
+      <div class="chart-card"><div class="chart-title">📈 ยอดขายรายวัน (7 วัน)</div><div class="chart-wrap"><canvas id="chartSales"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">🌐 สัดส่วนแพลตฟอร์ม</div><div class="chart-wrap"><canvas id="chartPlat"></canvas></div></div>
+      <div class="chart-card full"><div class="chart-title">📊 Engagement & Views รายสัปดาห์</div><div class="chart-wrap"><canvas id="chartEngagement"></canvas></div></div>
+    </div>`;
+  setTimeout(()=>{
+    const days=['จ','อ','พ','พฤ','ศ','ส','อา'];
+    const cFont={color:'#8A9BB0',font:{family:'Inter',size:10}};
+    if(charts.sales) charts.sales.destroy();
+    charts.sales=new Chart(document.getElementById('chartSales'),{type:'line',data:{labels:days,datasets:[{label:'ยอดขาย(฿)',data:[12400,18200,15600,22100,19800,28400,24600],borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,.12)',tension:.4,fill:true,pointBackgroundColor:'#C9A84C',pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:cFont,grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:cFont,grid:{color:'rgba(255,255,255,.06)'}}}}});
+    if(charts.plat) charts.plat.destroy();
+    const ptotal=platCounts.reduce((a,b)=>a+b,0)||4;
+    charts.plat=new Chart(document.getElementById('chartPlat'),{type:'doughnut',data:{labels:['Facebook','TikTok','Shopee','X'],datasets:[{data:platCounts.map(c=>c||1),backgroundColor:['#1877F2','#444','#EE4D2D','#888'],borderWidth:2,borderColor:'#162436'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:cFont}}}});
+    if(charts.eng) charts.eng.destroy();
+    const weeks=['สัปดาห์1','สัปดาห์2','สัปดาห์3','สัปดาห์4'];
+    charts.eng=new Chart(document.getElementById('chartEngagement'),{type:'bar',data:{labels:weeks,datasets:[{label:'Views(K)',data:[128,215,189,312],backgroundColor:'rgba(201,168,76,.7)'},{label:'Engagement(%)',data:[4.2,6.8,5.9,8.9],backgroundColor:'rgba(92,196,138,.7)'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:cFont}},scales:{x:{ticks:cFont,grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:cFont,grid:{color:'rgba(255,255,255,.06)'}}}}});
+  },100);
+}
+
+// ── SCRIPT GENERATOR ──
+function updateScriptProductList(){
+  const sel=document.getElementById('sg-product'); if(!sel) return;
+  sel.innerHTML='<option value="">— เลือกสินค้า หรือกรอกเอง —</option>'+
+    products.map(p=>`<option value="${p.id}">${p.name} (฿${p.price})</option>`).join('');
+}
+function fillFromProduct(){
+  const id=document.getElementById('sg-product').value;
+  const p=products.find(x=>x.id===id); if(!p) return;
+  document.getElementById('sg-name').value=p.name;
+  document.getElementById('sg-price').value=p.price;
+  document.getElementById('sg-desc').value=p.desc||'';
+}
+let generatedScripts={};
+async function generateScript(){
+  const name=document.getElementById('sg-name').value.trim();
+  if(!name){showToast('❌ กรอกชื่อสินค้าก่อนนะคะ');return;}
+  const price=document.getElementById('sg-price').value;
+  const desc=document.getElementById('sg-desc').value.trim();
+  const target=document.getElementById('sg-target').value.trim();
+  const style=document.getElementById('sg-style').value;
+  const plats=[...document.querySelectorAll('#sgPlatChecks .plat-chk.on')].map(e=>{
+    const t=e.textContent; if(t.includes('TikTok'))return'TikTok';if(t.includes('Facebook'))return'Facebook';if(t.includes('Shopee'))return'Shopee';if(t.includes('X'))return'X'; return t.trim();
+  });
+  if(!plats.length){showToast('⚠️ เลือกแพลตฟอร์มก่อนนะคะ');return;}
+  const btn=document.getElementById('genBtn'); btn.disabled=true; btn.textContent='⏳ กำลังสร้าง…';
+  document.getElementById('scriptContent').innerHTML='<div class="script-empty"><div class="script-empty-icon">⚡</div><div style="font-size:.78rem;color:var(--slate)">Groq AI กำลังเขียนสคริปต์…</div></div>';
+  document.getElementById('scriptTabs').innerHTML='';
+  generatedScripts={};
+  try {
+    for(const pl of plats){
+      const dur={TikTok:'15-30 วิ',Facebook:'30-60 วิ',Shopee:'60-90 วิ',X:'15-30 วิ'}[pl]||'30 วิ';
+      const prompt=`เขียนสคริปต์คลิปขายสินค้าสำหรับ ${pl} สไตล์ "${style}"
+สินค้า: ${name}${price?` ราคา ฿${price}`:''}${desc?`\nจุดเด่น: ${desc}`:''}${target?`\nกลุ่มเป้าหมาย: ${target}`:''}
+ความยาว: ${dur}
+
+ตอบในรูปแบบนี้เท่านั้น:
+🎯 HOOK (3 วิแรก):
+[hook]
+
+📹 BODY (เนื้อหาหลัก):
+[body]
+
+🛒 CTA (ปิดการขาย):
+[cta]
+
+#HASHTAG:
+[hashtags]`;
+      const r=await callGroq([],prompt);
+      generatedScripts[pl]=r;
+    }
+    renderScripts(plats);
+  } catch(e){
+    document.getElementById('scriptContent').innerHTML=`<div class="script-empty"><div style="color:var(--red)">เกิดข้อผิดพลาด: ${e.message}</div></div>`;
+  } finally{btn.disabled=false;btn.textContent='⚡ สร้างสคริปต์ด้วย Groq AI';}
+}
+const platColors={TikTok:'#222',Facebook:'var(--fb)',Shopee:'var(--sp)',X:'#222'};
+const platIcons={TikTok:'♪',Facebook:'f',Shopee:'🛍',X:'𝕏'};
+function renderScripts(plats){
+  const tabs=document.getElementById('scriptTabs');
+  tabs.innerHTML=plats.map((pl,i)=>`<button class="script-tab ${i===0?'active':''}" onclick="showScriptTab('${pl}',this)">${platIcons[pl]} ${pl}</button>`).join('');
+  showScriptTab(plats[0], tabs.children[0]);
+}
+function showScriptTab(plat, btn){
+  document.querySelectorAll('.script-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const text=generatedScripts[plat]||'ไม่มีข้อมูล';
+  const sections=text.split('\n\n').filter(Boolean);
+  document.getElementById('scriptContent').innerHTML=`
+    <div class="script-result">
+      <div class="script-result-header">
+        <div class="script-result-plat" style="background:${platColors[plat]||'#333'};color:#fff">${platIcons[plat]||'?'}</div>
+        <div class="script-result-name">สคริปต์สำหรับ ${plat}</div>
+        <div class="script-result-dur">⚡ Groq AI</div>
+      </div>
+      ${sections.map(s=>`<div class="script-section"><div class="script-section-text">${s.replace(/\n/g,'<br>')}</div></div>`).join('')}
+      <button class="copy-btn" onclick="copyScript('${plat}')">📋 Copy สคริปต์นี้</button>
+    </div>`;
+}
+function copyScript(plat){
+  navigator.clipboard.writeText(generatedScripts[plat]||'').then(()=>showToast('📋 Copy แล้ว!'));
+}
+
+// ── PAGE SWITCHING ──
+function showPage(id, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-nav').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='analytics'){buildAnalytics();}
+}
+
+// ── UTILS ──
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function getTime(){return new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>
